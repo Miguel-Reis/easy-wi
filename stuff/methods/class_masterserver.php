@@ -232,6 +232,25 @@ class masterServer {
         return implode('<br>', $this->winCmds);
     }
 
+    private function steamCMDcheck (){
+
+        $this->shellScript .= 'if [ ! -d "' . $this->masterserverDir . 'steamCMD/" ]; then' . "\n";
+        $this->shellScript .= 'mkdir -p "' . $this->masterserverDir . 'steamCMD/"' . "\n";
+        $this->shellScript .= 'cd "' . $this->masterserverDir . 'steamCMD/"' . "\n";
+        $this->shellScript .= 'if [ ! -f steamcmd.sh ]; then' . "\n";
+        $this->shellScript .= 'wget -q --timeout=10 http://media.steampowered.com/client/steamcmd_linux.tar.gz' . "\n";
+        $this->shellScript .= 'if [ -f steamcmd_linux.tar.gz ]; then' . "\n";
+        $this->shellScript .= 'tar xfz steamcmd_linux.tar.gz' . "\n";
+        $this->shellScript .= 'rm -f steamcmd_linux.tar.gz' . "\n";
+        $this->shellScript .= 'chmod +x steamcmd.sh' . "\n";
+        $this->shellScript .= './steamcmd.sh +login anonymous +quit' . "\n";
+        $this->shellScript .= 'fi' . "\n";
+        $this->shellScript .= 'fi' . "\n";
+        $this->shellScript .= 'fi' . "\n";
+        $this->shellScript .= 'cd' . "\n";
+
+    }
+
     private function startShellScript () {
 
         $this->uniqueHex = dechex(mt_rand());
@@ -254,20 +273,7 @@ class masterServer {
             $this->shellScript .= 'fi' . "\n";
         }
 
-        $this->shellScript .= 'if [ ! -d "' . $this->masterserverDir . 'steamCMD/" ]; then' . "\n";
-        $this->shellScript .= 'mkdir -p "' . $this->masterserverDir . 'steamCMD/"' . "\n";
-        $this->shellScript .= 'cd "' . $this->masterserverDir . 'steamCMD/"' . "\n";
-        $this->shellScript .= 'if [ ! -f steamcmd.sh ]; then' . "\n";
-        $this->shellScript .= 'wget -q --timeout=10 http://media.steampowered.com/client/steamcmd_linux.tar.gz' . "\n";
-        $this->shellScript .= 'if [ -f steamcmd_linux.tar.gz ]; then' . "\n";
-        $this->shellScript .= 'tar xfz steamcmd_linux.tar.gz' . "\n";
-        $this->shellScript .= 'rm -f steamcmd_linux.tar.gz' . "\n";
-        $this->shellScript .= 'chmod +x steamcmd.sh' . "\n";
-        $this->shellScript .= './steamcmd.sh +login anonymous +quit' . "\n";
-        $this->shellScript .= 'fi' . "\n";
-        $this->shellScript .= 'fi' . "\n";
-        $this->shellScript .= 'fi' . "\n";
-        $this->shellScript .= 'cd' . "\n";
+        steamCMDcheck();
     }
 
     private function serverSync ($shorten, $updateLog) {

@@ -125,28 +125,6 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
 
     echo 'ok';
 
-} else {
-
-    $query = $sql->prepare("SELECT AES_DECRYPT(`pass`,?) AS `decryptedpass`,`ip`,`userid` FROM `virtualcontainer` WHERE `ip`=? AND `status`='2' LIMIT 1");
-    $query2 = $sql->prepare("UPDATE `virtualcontainer` SET `status`='0' WHERE `ip`=? LIMIT 1");
-    $query3 = $sql->prepare("SELECT `mail_vserver` FROM `userdata` WHERE `id`=? LIMIT 1");
-
-    $query->execute(array($aeskey, $ip));
-	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-		$pass = $row['decryptedpass'];
-		$userid = $row['userid'];
-		$ip = $row['ip'];
-        $query2->execute(array($ip));
-        $query3->execute(array($userid));
-		while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
-			if ($row3['mail_vserver'] == 'Y') {
-				sendmail('emailvinstall', $userid, $ip, $pass);
-			}
-		}
-	}
-
-    echo (isset($pass)) ? $pass : 'old';
 }
 
 $sql = null;
