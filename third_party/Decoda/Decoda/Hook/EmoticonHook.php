@@ -7,7 +7,6 @@
 
 namespace Decoda\Hook;
 
-use Decoda\Decoda;
 use Decoda\Loader\FileLoader;
 
 /**
@@ -18,26 +17,26 @@ class EmoticonHook extends AbstractHook {
     /**
      * Configuration.
      *
-     * @type array
+     * @var array
      */
-    protected $_config = array(
+    protected $_config = [
         'path' => '/images/',
         'extension' => 'png'
-    );
+    ];
 
     /**
-     * Mapping of emoticons to smilies.
+     * Mapping of emoticons to smileys.
      *
-     * @type array
+     * @var array
      */
-    protected $_emoticons = array();
+    protected $_emoticons = [];
 
     /**
-     * Map of smilies to emoticons.
+     * Map of smileys to emoticons.
      *
-     * @type array
+     * @var string[]
      */
-    protected $_smilies = array();
+    protected $_smileys = [];
 
     /**
      * Read the contents of the loaders into the emoticons list.
@@ -49,7 +48,8 @@ class EmoticonHook extends AbstractHook {
 
         // Load files from config paths
         foreach ($this->getParser()->getPaths() as $path) {
-            foreach (glob($path . 'emoticons.*') as $file) {
+            $files = glob($path . 'emoticons.*') ?: [];
+            foreach ($files as $file) {
                 $this->addLoader(new FileLoader($file));
             }
         }
@@ -59,9 +59,9 @@ class EmoticonHook extends AbstractHook {
             $loader->setParser($this->getParser());
 
             if ($emoticons = $loader->load()) {
-                foreach ($emoticons as $emoticon => $smilies) {
-                    foreach ($smilies as $smile) {
-                        $this->_smilies[$smile] = $emoticon;
+                foreach ($emoticons as $emoticon => $smileys) {
+                    foreach ($smileys as $smiley) {
+                        $this->_smileys[$smiley] = $emoticon;
                     }
                 }
 
@@ -77,24 +77,24 @@ class EmoticonHook extends AbstractHook {
      * @return string
      */
     public function afterParse($content) {
-        $smilies = $this->getSmilies();
+        $smileys = $this->getSmileys();
 
-        // Build the smilies regex
-        $smiliesRegex = implode('|', array_map(function ($smile) {
-            return preg_quote($smile, '/');
-        }, $smilies));
+        // Build the smileys regex
+        $smileysRegex = implode('|', array_map(function ($smiley) {
+            return preg_quote($smiley, '/');
+        }, $smileys));
 
-        $pattern = sprintf('/(?:(?<=[\s.;>:)])|^)(%s)/', $smiliesRegex);
-        $content = preg_replace_callback($pattern, array($this, '_emoticonCallback'), $content);
+        $pattern = sprintf('/(?:(?<=[\s.;>:)])|^)(%s)/', $smileysRegex);
+        $content = (string)preg_replace_callback($pattern, [$this, '_emoticonCallback'], $content);
 
-        $pattern = sprintf('/(%s)(?:(?=[\s.&<:(])|$)/', $smiliesRegex);
-        $content = preg_replace_callback($pattern, array($this, '_emoticonCallback'), $content);
+        $pattern = sprintf('/(%s)(?:(?=[\s.&<:(])|$)/', $smileysRegex);
+        $content = (string)preg_replace_callback($pattern, [$this, '_emoticonCallback'], $content);
 
         return $content;
     }
 
     /**
-     * Gets the mapping of emoticons and smilies.
+     * Gets the mapping of emoticons and smileys.
      *
      * @return array
      */
@@ -103,12 +103,12 @@ class EmoticonHook extends AbstractHook {
     }
 
     /**
-     * Returns all available smilies.
+     * Returns all available smileys.
      *
-     * @return array
+     * @return string[]
      */
-    public function getSmilies() {
-        return array_keys($this->_smilies);
+    public function getSmileys() {
+        return array_keys($this->_smileys);
     }
 
     /**
@@ -118,7 +118,7 @@ class EmoticonHook extends AbstractHook {
      * @return bool
      */
     public function hasSmiley($smiley) {
-        return isset($this->_smilies[$smiley]);
+        return isset($this->_smileys[$smiley]);
     }
 
     /**
@@ -130,12 +130,12 @@ class EmoticonHook extends AbstractHook {
      */
     public function render($smiley, $isXhtml = true) {
         if (!$this->hasSmiley($smiley)) {
-            return null;
+            return '';
         }
 
         $path = sprintf('%s%s.%s',
             $this->getConfig('path'),
-            $this->_smilies[$smiley],
+            $this->_smileys[$smiley],
             $this->getConfig('extension'));
 
         if ($isXhtml) {
@@ -150,7 +150,7 @@ class EmoticonHook extends AbstractHook {
     /**
      * Callback for smiley processing.
      *
-     * @param array $matches
+     * @param string[] $matches
      * @return string
      */
     protected function _emoticonCallback($matches) {

@@ -25,11 +25,11 @@ class ClickableHook extends AbstractHook {
 
         // To make sure we won't parse links inside [url] or [img] tags, we'll first replace all urls/imgs with uniqids
         // and keep them in this array, and restore them at the end, after parsing
-        $ignoredStrings = array();
+        $ignoredStrings = [];
 
         // The tags we won't touch
         // For example, neither [url="http://www.example.com"] nor [img]http://www.example.com[/img] will be replaced.
-        $ignoredTags = array('url', 'link', 'img', 'image');
+        $ignoredTags = ['url', 'link', 'img', 'image'];
 
         $i = 0;
         foreach ($ignoredTags as $tag) {
@@ -37,7 +37,7 @@ class ClickableHook extends AbstractHook {
                 $matches = array_unique(array_map(function($x) { return $x[0]; }, $matches));
 
                 foreach ($matches as $val) {
-                    $uniqid = uniqid($i++);
+                    $uniqid = uniqid((string)($i++), true);
 
                     $ignoredStrings[$uniqid] = $val;
                     $content = str_replace($val, $uniqid, $content);
@@ -49,23 +49,23 @@ class ClickableHook extends AbstractHook {
             $protocols = $parser->getFilter('Url')->getConfig('protocols');
             $chars = preg_quote('-_=+|\;:&?/[]%,.~!@#$*(){}"\'', '/');
 
-            $pattern = implode('', array(
+            $pattern = implode('', [
                 '((' . implode('|', $protocols) . ')s?:\/\/([\w\.\+]+:[\w\.\+]+@)?|www\.)', // protocol & login or www. (without http(s))
                 '([\w\-\.]{5,255}+)', // domain, tld
                 '(:[0-9]{0,6}+)?', // port
                 '(\/[a-z0-9' . $chars . ']+)?', // path
                 '(\/?\?[a-z0-9' . $chars . ']+)?', // query
                 '(#[a-z0-9' . $chars . ']+)?' // fragment
-            ));
+            ]);
 
-            $content = preg_replace_callback('/(' . $pattern . ')/i', array($this, '_urlCallback'), $content);
+            $content = (string)preg_replace_callback('/(' . $pattern . ')/i', [$this, '_urlCallback'], $content);
         }
 
         // Based on W3C HTML5 spec: https://www.w3.org/TR/html5/forms.html#valid-e-mail-address
         if ($parser->hasFilter('Email')) {
             $pattern = '(:\/\/[\w\.\+]+:)?([a-z0-9.!#$%&\'*+\/=?^_`{|}~\-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*)';
 
-            $content = preg_replace_callback('/' . $pattern . '/i', array($this, '_emailCallback'), $content);
+            $content = (string)preg_replace_callback('/' . $pattern . '/i', [$this, '_emailCallback'], $content);
         }
 
         // We restore the tags we ommited
@@ -79,7 +79,7 @@ class ClickableHook extends AbstractHook {
     /**
      * Callback for email processing.
      *
-     * @param array $matches
+     * @param string[] $matches
      * @return string
      */
     protected function _emailCallback($matches) {
@@ -88,23 +88,23 @@ class ClickableHook extends AbstractHook {
             return $matches[0];
         }
 
-        return $this->getParser()->getFilter('Email')->parse(array(
+        return $this->getParser()->getFilter('Email')->parse([
             'tag' => 'email',
-            'attributes' => array()
-        ), trim($matches[2]));
+            'attributes' => []
+        ], trim($matches[2]));
     }
 
     /**
      * Callback for URL processing.
      *
-     * @param array $matches
+     * @param string[] $matches
      * @return string
      */
     protected function _urlCallback($matches) {
-        return $this->getParser()->getFilter('Url')->parse(array(
+        return $this->getParser()->getFilter('Url')->parse([
             'tag' => 'url',
-            'attributes' => array()
-        ), trim($matches[1]));
+            'attributes' => []
+        ], trim($matches[1]));
     }
 
 }

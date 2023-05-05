@@ -243,16 +243,16 @@ class masterServer {
         $this->shellScript .= 'BOMRM="sed \"\'s/^\xef\xbb\xbf//g\'\""' . "\n";
         $this->shellScript .= 'PATTERN="\.log\|\.txt\|\.cfg\|\.vdf\|\.db\|\.dat\|\.ztmp\|\.blib\|log\/\|logs\/\|downloads\/\|DownloadLists\/\|metamod\/\|amxmodx\/\|hl\/\|hl2\/\|cfg\/\|addons\/\|bin\/\|classes/"' . "\n";
 
-        // if ($this->imageserver != 'none') {
+        if ($this->imageserver != 'none') {
 
-        //     $this->shellScript .= 'if [ "`which rsync`" != "" -a "`echo ' . $this->imageserver . ' | grep -E \'^ftp(s|)\:(.*)\'`" == "" ]; then' . "\n";
-        //     $this->shellScript .= 'SYNCTOOL="rsync"' . "\n";
-        //     $this->shellScript .= 'SYNCCMD="rsync -azuvx ' . $this->imageserver . '"' . "\n";
-        //     $this->shellScript .= 'else' . "\n";
-        //     $this->shellScript .= 'SYNCTOOL="wget"' . "\n";
-        //     $this->shellScript .= 'SYNCCMD="wget -r -N -l inf -nH --no-check-certificate --cut-dirs=1 ' . $this->imageserver . '"' . "\n";
-        //     $this->shellScript .= 'fi' . "\n";
-        // }
+            $this->shellScript .= 'if [ "`which rsync`" != "" -a "`echo ' . $this->imageserver . ' | grep -E \'^ftp(s|)\:(.*)\'`" == "" ]; then' . "\n";
+            $this->shellScript .= 'SYNCTOOL="rsync"' . "\n";
+            $this->shellScript .= 'SYNCCMD="rsync -azuvx ' . $this->imageserver . '"' . "\n";
+            $this->shellScript .= 'else' . "\n";
+            $this->shellScript .= 'SYNCTOOL="wget"' . "\n";
+            $this->shellScript .= 'SYNCCMD="wget -r -N -l inf -nH --no-check-certificate --cut-dirs=1 ' . $this->imageserver . '"' . "\n";
+            $this->shellScript .= 'fi' . "\n";
+        }
 
         $this->shellScript .= 'if [ ! -d "' . $this->masterserverDir . 'steamCMD/" ]; then' . "\n";
         $this->shellScript .= 'mkdir -p "' . $this->masterserverDir . 'steamCMD/"' . "\n";

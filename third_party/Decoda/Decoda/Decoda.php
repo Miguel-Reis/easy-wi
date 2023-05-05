@@ -64,25 +64,18 @@ class Decoda {
     const NL_CONVERT = 2;
 
     /**
-     * Blacklist of tags not to parse.
-     *
-     * @type array
-     */
-    protected $_blacklist = array();
-
-    /**
      * Unique cache key for this block.
      *
-     * @type string
+     * @var string
      */
     protected $_cacheKey = '';
 
     /**
      * Configuration.
      *
-     * @type array
+     * @var array
      */
-    protected $_config = array(
+    protected $_config = [
         'open' => '[',
         'close' => ']',
         'locale' => 'en-us',
@@ -97,105 +90,112 @@ class Decoda {
         'standaloneTags' => false,
         'configPath' => '../config/',
         'cacheExpires' => '+1 week',
-    );
+    ];
 
     /**
      * Logged errors for incorrectly nested nodes and types.
      *
-     * @type array
+     * @var array
      */
-    protected $_errors = array();
+    protected $_errors = [];
 
     /**
      * List of all instantiated filter objects.
      *
-     * @type array
+     * @var \Decoda\Filter[]
      */
-    protected $_filters = array();
+    protected $_filters = [];
 
     /**
      * Mapping of tags to its filter object.
      *
-     * @type array
+     * @var string[]
      */
-    protected $_filterMap = array();
+    protected $_filterMap = [];
 
     /**
      * List of all instantiated hook objects.
      *
-     * @type array
+     * @var \Decoda\Hook[]
      */
-    protected $_hooks = array();
+    protected $_hooks = [];
 
     /**
      * Message strings for localization purposes.
      *
-     * @type array
+     * @var array
      */
-    protected $_messages = array();
+    protected $_messages = [];
 
     /**
      * Children nodes.
      *
-     * @type array
+     * @var array
      */
-    protected $_nodes = array();
+    protected $_nodes = [];
 
     /**
      * The parsed string.
      *
-     * @type string
+     * @var string
      */
     protected $_parsed = '';
 
     /**
      * Configuration folder paths.
      *
-     * @type array
+     * @var string[]
      */
-    protected $_paths = array();
+    protected $_paths = [];
 
     /**
      * Caching engine.
      *
-     * @type \Decoda\Storage
+     * @var \Decoda\Storage|null
      */
     protected $_storage;
 
     /**
      * The raw string before parsing.
      *
-     * @type string
+     * @var string
      */
     protected $_string = '';
 
     /**
      * The stripped string.
      *
-     * @type string
+     * @var string
      */
     protected $_stripped = '';
 
     /**
      * List of tags from filters.
      *
-     * @type array
+     * @var array
      */
-    protected $_tags = array();
+    protected $_tags = [];
 
     /**
      * Template engine used for parsing.
      *
-     * @type \Decoda\Engine
+     * @var \Decoda\Engine|null
      */
-    protected $_engine = null;
+    protected $_engine;
+
+    /**
+     * Blacklist of tags not to parse.
+     *
+     * @var string[]
+     */
+    protected $_blacklist = [];
 
     /**
      * Whitelist of tags to parse.
      *
-     * @type array
+     * @var string[]
      */
-    protected $_whitelist = array();
+    protected $_whitelist = [];
 
     /**
      * Store the text and single instance configuration.
@@ -204,11 +204,12 @@ class Decoda {
      * @param array $config
      * @param string $cacheKey
      */
-    public function __construct($string = '', array $config = array(), $cacheKey = '') {
+    public function __construct($string = '', array $config = [], $cacheKey = '') {
         $this->setConfig($config);
         $this->reset($string, true, $cacheKey);
 
-        if ($path = $this->getConfig('configPath')) {
+        $path = $this->getConfig('configPath');
+        if ($path) {
             $this->addPath($path);
         }
     }
@@ -217,15 +218,16 @@ class Decoda {
      * Add additional filters.
      *
      * @param \Decoda\Filter $filter
-     * @param string $key
+     * @param string|null $key
      * @return \Decoda\Decoda
      */
     public function addFilter(Filter $filter, $key = null) {
         $filter->setParser($this);
 
         if (!$key) {
-            $key = explode('\\', get_class($filter));
-            $key = str_replace('Filter', '', end($key));
+            $keyParts = explode('\\', get_class($filter));
+            $key = end($keyParts) ?: '';
+            $key = str_replace('Filter', '', $key);
         }
 
         $tags = $filter->getTags();
@@ -246,15 +248,16 @@ class Decoda {
      * Add hooks that are triggered at specific events.
      *
      * @param \Decoda\Hook $hook
-     * @param string $key
+     * @param string|null $key
      * @return \Decoda\Decoda
      */
     public function addHook(Hook $hook, $key = null) {
         $hook->setParser($this);
 
         if (!$key) {
-            $key = explode('\\', get_class($hook));
-            $key = str_replace('Hook', '', end($key));
+            $keyParts = explode('\\', get_class($hook));
+            $key = end($keyParts) ?: '';
+            $key = str_replace('Hook', '', $key);
         }
 
         $this->_hooks[$key] = $hook;
@@ -296,7 +299,7 @@ class Decoda {
      */
     public function addPath($path) {
         if (substr($path, 0, 3) === '../') {
-            $path = realpath(__DIR__ . '/' . $path);
+            $path = realpath(__DIR__ . '/' . $path) ?: '';
         }
 
         if (substr($path, -1) !== '/') {
@@ -334,7 +337,7 @@ class Decoda {
      */
     public function cleanNewlines($string) {
         if ($max = $this->getConfig('maxNewlines')) {
-            $string = preg_replace('/\n{' . ($max + 1) . ',}/', str_repeat("\n", $max), $string);
+            $string = (string)preg_replace('/\n{' . ($max + 1) . ',}/', str_repeat("\n", $max), $string);
         }
 
         return trim($string);
@@ -413,7 +416,7 @@ class Decoda {
      * Escape HTML characters amd entities.
      *
      * @param string $string
-     * @param int $flags
+     * @param int|null $flags
      * @return string
      */
     public function escape($string, $flags = null) {
@@ -445,7 +448,7 @@ class Decoda {
     /**
      * Return the current blacklist.
      *
-     * @return array
+     * @return string[]
      */
     public function getBlacklist() {
         return $this->_blacklist;
@@ -481,7 +484,7 @@ class Decoda {
             return $this->_errors;
         }
 
-        $clean = array();
+        $clean = [];
 
         if ($this->_errors) {
             foreach ($this->_errors as $error) {
@@ -533,7 +536,7 @@ class Decoda {
     /**
      * Return all filters.
      *
-     * @return array
+     * @return \Decoda\Filter[]
      */
     public function getFilters() {
         return $this->_filters;
@@ -557,7 +560,7 @@ class Decoda {
     /**
      * Return all hooks.
      *
-     * @return array
+     * @return \Decoda\Hook[]
      */
     public function getHooks() {
         return $this->_hooks;
@@ -575,15 +578,17 @@ class Decoda {
             $engine->addPath(dirname(__DIR__) . '/templates/');
 
             $this->setEngine($engine);
+        } else {
+            $engine = $this->_engine;
         }
 
-        return $this->_engine;
+        return $engine;
     }
 
     /**
      * Return the configuration folder paths.
      *
-     * @return array
+     * @return string[]
      */
     public function getPaths() {
         return $this->_paths;
@@ -592,7 +597,7 @@ class Decoda {
     /**
      * Return the current storage engine.
      *
-     * @return \Decoda\Storage
+     * @return \Decoda\Storage|null
      */
     public function getStorage() {
         return $this->_storage;
@@ -601,7 +606,7 @@ class Decoda {
     /**
      * Return the current whitelist.
      *
-     * @return array
+     * @return string[]
      */
     public function getWhitelist() {
         return $this->_whitelist;
@@ -611,7 +616,7 @@ class Decoda {
      * Check if a filter exists.
      *
      * @param string $filter
-     * @return boolean
+     * @return bool
      */
     public function hasFilter($filter) {
         return isset($this->_filters[$filter]);
@@ -621,7 +626,7 @@ class Decoda {
      * Check if a hook exists.
      *
      * @param string $hook
-     * @return boolean
+     * @return bool
      */
     public function hasHook($hook) {
         return isset($this->_hooks[$hook]);
@@ -635,7 +640,7 @@ class Decoda {
      * @return string
      * @throws \Decoda\Exception\MissingLocaleException
      */
-    public function message($key, array $vars = array()) {
+    public function message($key, array $vars = []) {
         if (!$this->_messages) {
             $this->_loadMessages();
         }
@@ -739,7 +744,7 @@ class Decoda {
     /**
      * Remove hook(s).
      *
-     * @param string|array $hooks
+     * @param string|string[] $hooks
      * @return \Decoda\Decoda
      */
     public function removeHook($hooks) {
@@ -759,10 +764,10 @@ class Decoda {
      * @return \Decoda\Decoda
      */
     public function reset($string, $flush = false, $cacheKey = '') {
-        $this->_errors = array();
-        $this->_nodes = array();
-        $this->_blacklist = array();
-        $this->_whitelist = array();
+        $this->_errors = [];
+        $this->_nodes = [];
+        $this->_blacklist = [];
+        $this->_whitelist = [];
         $this->_parsed = '';
         $this->_stripped = '';
         $this->_string = $this->escapeHtml($string);
@@ -771,7 +776,7 @@ class Decoda {
         if ($flush) {
             $this->resetFilters();
             $this->resetHooks();
-            $this->_paths = array();
+            $this->_paths = [];
         }
 
         return $this;
@@ -783,9 +788,9 @@ class Decoda {
      * @return \Decoda\Decoda
      */
     public function resetFilters() {
-        $this->_filters = array();
-        $this->_filterMap = array();
-        $this->_tags = array();
+        $this->_filters = [];
+        $this->_filterMap = [];
+        $this->_tags = [];
 
         $this->addFilter(new \Decoda\Filter\EmptyFilter());
 
@@ -798,7 +803,7 @@ class Decoda {
      * @return \Decoda\Decoda
      */
     public function resetHooks() {
-        $this->_hooks = array();
+        $this->_hooks = [];
 
         $this->addHook(new \Decoda\Hook\EmptyHook());
 
@@ -932,7 +937,7 @@ class Decoda {
     }
 
     /**
-     * Toggle whether standalone tags (self-closing tags without the 
+     * Toggle whether standalone tags (self-closing tags without the
      * trailing slash) are allowed.
      *
      * @param bool $status
@@ -959,7 +964,7 @@ class Decoda {
     /**
      * Set the max amount of newlines.
      *
-     * @param bool $max
+     * @param int $max
      * @return \Decoda\Decoda
      */
     public function setMaxNewlines($max) {
@@ -1071,7 +1076,7 @@ class Decoda {
         $string = $this->_triggerHook('afterStrip', $string);
 
         if (!$html) {
-            $string = preg_replace('/<br\/?>/', "\n", $string); // convert back
+            $string = (string)preg_replace('/<br\/?>/', "\n", $string); // convert back
             $string = strip_tags($string);
         }
 
@@ -1112,9 +1117,9 @@ class Decoda {
         $disabled = $this->getConfig('disabled');
         $oe = preg_quote($this->getConfig('open'), '/');
         $ce = preg_quote($this->getConfig('close'), '/');
-        $tag = null;
+        $tag = '';
         $type = self::TAG_NONE;
-        $attributes = array();
+        $attributes = [];
 
         // Closing tag
         if (preg_match('/^' . $oe . '\s*\/\s*([-a-z0-9\*]+)\s*' . $ce . '/i', $string, $matches)) {
@@ -1133,7 +1138,7 @@ class Decoda {
         }
 
         if (!isset($this->_tags[$tag])) {
-            return false;
+            return [];
         }
 
         $source = $this->_tags[$tag];
@@ -1150,7 +1155,7 @@ class Decoda {
 
         // Find attributes
         if (!$disabled) {
-            $found = array();
+            $found = [];
 
             preg_match_all('/([a-z_\-]+)=\"(.*?)\"/i', $string, $matches, PREG_SET_ORDER);
 
@@ -1175,6 +1180,10 @@ class Decoda {
             }
 
             if ($found) {
+                /**
+                 * @var string $key
+                 * @var string $value
+                 */
                 foreach ($found as $key => $value) {
                     $value = trim(trim($value), '"');
 
@@ -1216,19 +1225,19 @@ class Decoda {
 
         if (
             $disabled ||
-            ($this->_whitelist && !in_array($tag, $this->_whitelist)) ||
-            ($this->_blacklist && in_array($tag, $this->_blacklist))
+            ($this->_whitelist && !in_array($tag, $this->_whitelist, true)) ||
+            ($this->_blacklist && in_array($tag, $this->_blacklist, true))
         ) {
             $type = self::TAG_NONE;
             $string = '';
         }
 
-        return array(
+        return [
             'tag' => $tag,
             'type' => $type,
             'text' => $string,
-            'attributes' => $attributes
-        );
+            'attributes' => $attributes,
+        ];
     }
 
     /**
@@ -1236,15 +1245,15 @@ class Decoda {
      *
      * @param array $chunks
      * @param array $wrapper
-     * @return string
+     * @return array
      */
-    protected function _cleanChunks(array $chunks, array $wrapper = array()) {
-        $clean = array();
-        $openTags = array();
-        $prevChunk = array();
-        $disallowed = array();
-        $parents = array();
-        $depths = array();
+    protected function _cleanChunks(array $chunks, array $wrapper = []) {
+        $clean = [];
+        $openTags = [];
+        $prevChunk = [];
+        $disallowed = [];
+        $parents = [];
+        $depths = [];
         $count = count($chunks);
         $i = 0;
 
@@ -1301,10 +1310,10 @@ class Decoda {
                         $clean[] = $chunk;
 
                         if ($root) {
-                            $openTags[] = array('tag' => $tag, 'index' => $i);
+                            $openTags[] = ['tag' => $tag, 'index' => $i];
                         }
                     } else {
-                        $disallowed[] = array('tag' => $tag, 'index' => $i);
+                        $disallowed[] = ['tag' => $tag, 'index' => $i];
                     }
                 break;
 
@@ -1326,6 +1335,7 @@ class Decoda {
 
                     // Return to previous parent before allowing
                     if ($parents) {
+                        /** @var array $parent */
                         $parent = array_pop($parents);
                     }
 
@@ -1344,13 +1354,14 @@ class Decoda {
                                 array_pop($openTags);
                             } else {
                                 while ($openTags) {
+                                    /** @var array $last */
                                     $last = array_pop($openTags);
 
                                     if ($last['tag'] !== $tag) {
-                                        $this->_errors[] = array(
+                                        $this->_errors[] = [
                                             'type' => self::ERROR_NESTING,
-                                            'tag' => $last['tag']
-                                        );
+                                            'tag' => $last['tag'],
+                                        ];
 
                                         unset($clean[$last['index']]);
                                     }
@@ -1371,12 +1382,13 @@ class Decoda {
 
         // Remove any unclosed tags
         while ($openTags) {
+            /** @var array $last */
             $last = array_pop($openTags);
 
-            $this->_errors[] = array(
+            $this->_errors[] = [
                 'type' => self::ERROR_CLOSING,
-                'tag' => $last['tag']
-            );
+                'tag' => $last['tag'],
+            ];
 
             unset($clean[$last['index']]);
         }
@@ -1397,10 +1409,10 @@ class Decoda {
         $closeBracket = $this->getConfig('close');
         $hasList = isset($this->_filters['List']);
         $starOpen = false;
-        $chunks = array();
+        $chunks = [];
 
         while ($strPos < $strLength) {
-            $tag = array();
+            $tag = [];
             $possibleLiteral = false;
             $isLiteral = false;
 
@@ -1469,24 +1481,24 @@ class Decoda {
 
                                 // Another star item appeared, so close the previous
                                 } else if ($starOpen && $tag['tag'] === '*') {
-                                    $chunks[] = array(
+                                    $chunks[] = [
                                         'tag' => '*',
                                         'type' => self::TAG_CLOSE,
                                         'text' => '[/*]',
-                                        'attributes' => array()
-                                    );
+                                        'attributes' => [],
+                                    ];
                                 }
 
                             } else if ($tag['type'] === self::TAG_CLOSE) {
-                                if ($starOpen && in_array($tag['tag'], array('list', 'olist', 'ol', 'ul'))) {
+                                if ($starOpen && in_array($tag['tag'], ['list', 'olist', 'ol', 'ul'], true)) {
                                     $starOpen = false;
 
-                                    $chunks[] = array(
+                                    $chunks[] = [
                                         'tag' => '*',
                                         'type' => self::TAG_CLOSE,
                                         'text' => '[/*]',
-                                        'attributes' => array()
-                                    );
+                                        'attributes' => [],
+                                    ];
                                 } else if ($tag['tag'] === '*') {
                                     $starOpen = false;
                                 }
@@ -1532,10 +1544,10 @@ class Decoda {
      * @param int $depth
      * @return array
      */
-    protected function _extractNodes(array $chunks, array $wrapper = array(), $depth = 0) {
+    protected function _extractNodes(array $chunks, array $wrapper = [], $depth = 0) {
         $chunks = $this->_cleanChunks($chunks, $wrapper);
-        $nodes = array();
-        $tag = array();
+        $nodes = [];
+        $tag = [];
         $openIndex = -1;
         $openCount = -1;
         $closeCount = -1;
@@ -1551,7 +1563,7 @@ class Decoda {
                 $nodes[] = $chunk['text'];
 
             } else if ($chunk['type'] === self::TAG_SELF_CLOSE && empty($tag)) {
-                $chunk['children'] = array();
+                $chunk['children'] = [];
                 $nodes[] = $chunk;
 
             } else if ($chunk['type'] === self::TAG_OPEN) {
@@ -1567,7 +1579,7 @@ class Decoda {
 
                 if ($openCount === $closeCount && $chunk['tag'] === $tag['tag']) {
                     $index = $i - $openIndex;
-                    $tag = array();
+                    $tag = [];
 
                     // Only reduce if not last index
                     if ($index !== $count) {
@@ -1598,31 +1610,26 @@ class Decoda {
      *
      * @param array $parent
      * @param string $tag
-     * @return boolean
+     * @return bool
      */
     protected function _isAllowed($parent, $tag) {
         $filter = $this->getFilterByTag($tag);
-
-        if (!$filter) {
-            return false;
-        }
-
         $child = $filter->getTag($tag);
 
         // Remove children after a certain nested depth
         if (isset($parent['currentDepth']) && $parent['maxChildDepth'] >= 0 && $parent['currentDepth'] > $parent['maxChildDepth']) {
             return false;
-
+        }
         // Children that can only be within a certain parent
-        } else if ($child['parent'] && !in_array($parent['tag'], $child['parent'])) {
+        if ($child['parent'] && !in_array($parent['tag'], $child['parent'], true)) {
             return false;
-
+        }
         // Parents that can not have specific direct descendant children
-        } else if ($parent['childrenBlacklist'] && in_array($child['tag'], $parent['childrenBlacklist'])) {
+        if ($parent['childrenBlacklist'] && in_array($child['tag'], $parent['childrenBlacklist'], true)) {
             return false;
-
+        }
         // Parents that can only have direct descendant children
-        } else if ($parent['childrenWhitelist'] && !in_array($child['tag'], $parent['childrenWhitelist'])) {
+        if ($parent['childrenWhitelist'] && !in_array($child['tag'], $parent['childrenWhitelist'], true)) {
             return false;
         }
 
@@ -1633,13 +1640,13 @@ class Decoda {
                 if ($child['displayType'] === self::TYPE_INLINE) {
                     return true;
                 }
-            break;
+                break;
             case self::TYPE_BLOCK:
                 // Block types only allowed if the parent is also a block
                 if ($parent['displayType'] === self::TYPE_BLOCK && $child['displayType'] === self::TYPE_BLOCK) {
                     return true;
                 }
-            break;
+                break;
             case self::TYPE_BOTH:
                 if ($parent['displayType'] === self::TYPE_INLINE) {
                     // Only allow inline if parent is inline
@@ -1649,18 +1656,18 @@ class Decoda {
                 } else {
                     return true;
                 }
-            break;
+                break;
         }
 
         // Log the error
-        $this->_errors[] = array(
+        $this->_errors[] = [
             'type' => self::ERROR_SCOPE,
             'parent' => $parent['tag'],
             'parentType' => $parent['displayType'],
             'parentAllowed' => $parent['allowedTypes'],
             'child' => $child['tag'],
-            'childType' => $child['displayType']
-        );
+            'childType' => $child['displayType'],
+        ];
 
         return false;
     }
@@ -1669,7 +1676,7 @@ class Decoda {
      * Return true if the string is parseable.
      *
      * @param string $string
-     * @return boolean
+     * @return bool
      */
     protected function _isParseable($string) {
         return (
@@ -1681,10 +1688,13 @@ class Decoda {
 
     /**
      * Load in all message strings from the config paths.
+     *
+     * @return void
      */
     protected function _loadMessages() {
         foreach ($this->getPaths() as $path) {
-            foreach (glob($path . 'messages.*') as $file) {
+            $files = glob($path . 'messages.*') ?: [];
+            foreach ($files as $file) {
                 $this->addMessages(new \Decoda\Loader\FileLoader($file));
             }
         }
@@ -1697,7 +1707,7 @@ class Decoda {
      * @param array $wrapper
      * @return string
      */
-    protected function _parse(array $nodes, array $wrapper = array()) {
+    protected function _parse(array $nodes, array $wrapper = []) {
         $parsed = '';
 
         if (!$nodes) {
@@ -1731,7 +1741,7 @@ class Decoda {
      * @param array $wrapper
      * @return string
      */
-    protected function _strip(array $nodes, array $wrapper = array()) {
+    protected function _strip(array $nodes, array $wrapper = []) {
         $parsed = '';
 
         if (!$nodes) {
@@ -1770,17 +1780,6 @@ class Decoda {
         }
 
         return $content;
-    }
-
-    /**
-     * Trim line breaks and not spaces.
-     *
-     * @deprecated
-     * @param string $string
-     * @return string
-     */
-    protected function _trim($string) {
-        return trim($string, "\t\n\r\0\x0B");
     }
 
 }

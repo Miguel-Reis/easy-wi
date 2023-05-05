@@ -15,9 +15,9 @@ class CodeHook extends AbstractHook {
     /**
      * Cached code blocks during the parsing process.
      *
-     * @var array
+     * @var string[]
      */
-    protected $_cache = array();
+    protected $_cache = [];
 
     /**
      * Cache code blocks before parsing. It use regexp (?R) recursivity mask to deal with other nested code tags
@@ -27,9 +27,9 @@ class CodeHook extends AbstractHook {
      * @return mixed
      */
     public function beforeParse($string) {
-        $this->_cache = array();
+        $this->_cache = [];
 
-        return preg_replace_callback('/\[code(.*?)\](((?R)|.)*?)\[\/code\]/is', array($this, '_encodeCallback'), $string);
+        return preg_replace_callback('/\[code(.*?)\](((?R)|.)*?)\[\/code\]/is', [$this, '_encodeCallback'], $string);
     }
 
     /**
@@ -39,9 +39,9 @@ class CodeHook extends AbstractHook {
      * @return mixed
      */
     public function afterParse($string) {
-        $string = preg_replace_callback('/\<pre(.*?)><code>(\$\$CODE(\d+)\$\$)<\/code>\<\/pre>/is', array($this, '_decodeCallback'), $string);
+        $string = preg_replace_callback('/\<pre(.*?)><code>(\$\$CODE(\d+)\$\$)<\/code>\<\/pre>/is', [$this, '_decodeCallback'], $string);
 
-        $this->_cache = array();
+        $this->_cache = [];
 
         return $string;
     }
@@ -49,7 +49,7 @@ class CodeHook extends AbstractHook {
     /**
      * Encode content using base64.
      *
-     * @param array $matches
+     * @param string[] $matches
      * @return string
      */
     protected function _encodeCallback(array $matches) {
@@ -62,7 +62,7 @@ class CodeHook extends AbstractHook {
     /**
      * Decode content using base64.
      *
-     * @param array $matches
+     * @param string[] $matches
      * @return string
      */
     protected function _decodeCallback(array $matches) {

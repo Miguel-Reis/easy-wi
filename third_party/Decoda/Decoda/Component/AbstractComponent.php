@@ -19,21 +19,21 @@ abstract class AbstractComponent implements Component {
     /**
      * Configuration.
      *
-     * @type array
+     * @var array
      */
-    protected $_config = array();
+    protected $_config = [];
 
     /**
      * List of Loaders.
      *
-     * @type \Decoda\Loader[]
+     * @var \Decoda\Loader[]
      */
-    protected $_loaders = array();
+    protected $_loaders = [];
 
     /**
      * Decoda object.
      *
-     * @type \Decoda\Decoda
+     * @var \Decoda\Decoda
      */
     protected $_parser;
 
@@ -42,13 +42,13 @@ abstract class AbstractComponent implements Component {
      *
      * @param array $config
      */
-    public function __construct(array $config = array()) {
+    public function __construct(array $config = []) {
         $this->setConfig($config);
         $this->construct();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function addLoader(Loader $loader) {
         $this->_loaders[] = $loader;
@@ -57,42 +57,42 @@ abstract class AbstractComponent implements Component {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function construct() {
         return;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getConfig($key) {
         return isset($this->_config[$key]) ? $this->_config[$key] : null;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getLoaders() {
         return $this->_loaders;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getParser() {
         return $this->_parser;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function message($key, array $vars = array()) {
+    public function message($key, array $vars = []) {
         return $this->getParser()->message($key, $vars);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function setConfig(array $config) {
         $this->_config = $config + $this->_config;
@@ -101,7 +101,7 @@ abstract class AbstractComponent implements Component {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function setParser(Decoda $parser) {
         $this->_parser = $parser;

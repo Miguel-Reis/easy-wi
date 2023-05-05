@@ -21,9 +21,9 @@ abstract class AbstractFilter extends AbstractComponent implements Filter {
     /**
      * Default tag configuration.
      *
-     * @type array
+     * @var array
      */
-    protected $_defaults = array(
+    protected $_defaults = [
         /**
          * tag              - (string) Decoda tag
          * htmlTag          - (string) HTML replacement tag
@@ -46,10 +46,10 @@ abstract class AbstractFilter extends AbstractComponent implements Filter {
          * aliasAttributes  - (array) Custom attributes to alias to another attribute
          * escapeAttributes - (boolean) Escape HTML entities within the parsed attributes
          */
-        'attributes' => array(),
-        'mapAttributes' => array(),
-        'htmlAttributes' => array(),
-        'aliasAttributes' => array(),
+        'attributes' => [],
+        'mapAttributes' => [],
+        'htmlAttributes' => [],
+        'aliasAttributes' => [],
         'escapeAttributes' => true,
 
         /**
@@ -77,25 +77,25 @@ abstract class AbstractFilter extends AbstractComponent implements Filter {
          * maxChildDepth        - (integer) Max depth for nested children of the same tag (-1 to disable)
          * persistContent       - (boolean) Should we persist text content from within deeply nested tags (but remove their wrapping tags)
          */
-        'parent' => array(),
-        'childrenWhitelist' => array(),
-        'childrenBlacklist' => array(),
+        'parent' => [],
+        'childrenWhitelist' => [],
+        'childrenBlacklist' => [],
         'maxChildDepth' => -1,
         'persistContent' => true
-    );
+    ];
 
     /**
      * Supported tags.
      *
-     * @type array
+     * @var array
      */
-    protected $_tags = array();
+    protected $_tags = [];
 
     /**
      * Generate all the tags on construction.
      */
     public function construct() {
-        $tags = array();
+        $tags = [];
         $defaults = $this->_defaults;
 
         foreach ($this->_tags as $tag => $settings) {
@@ -148,14 +148,14 @@ abstract class AbstractFilter extends AbstractComponent implements Filter {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getTags() {
         return $this->_tags;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function parse(array $tag, $content) {
         $setup = $this->getTag($tag['tag']);
@@ -165,17 +165,20 @@ abstract class AbstractFilter extends AbstractComponent implements Filter {
 
         // Test for an empty filter or empty tag
         if (!$setup || (!$content && $parser->getConfig('removeEmpty'))) {
-            return null;
+            return '';
         }
 
         // Merge arguments with method of same tag name
         // If the method returns false, exit early
         if (method_exists($this, $tag['tag'])) {
-            if ($response = call_user_func_array(array($this, $tag['tag']), array($tag, $content))) {
-                list($tag, $content) = $response;
-            } else {
-                return null;
+            /** @var callable $callable */
+            $callable = [$this, $tag['tag']];
+            $response = call_user_func_array($callable, [$tag, $content]);
+            if (!$response) {
+                return '';
             }
+
+            list($tag, $content) = $response;
         }
 
         if ($content) {
@@ -192,7 +195,7 @@ abstract class AbstractFilter extends AbstractComponent implements Filter {
                     $content = str_replace("\r", "", $parser->convertLineBreaks($content));
                 break;
                 case Decoda::NL_REMOVE:
-                    $content = str_replace(array("\r", "\n"), "", $content);
+                    $content = str_replace(["\r", "\n"], "", $content);
                 break;
             }
         }
@@ -233,7 +236,7 @@ abstract class AbstractFilter extends AbstractComponent implements Filter {
             $parsed = $engine->render($tag, $content);
 
             if ($setup['lineBreaks'] !== Decoda::NL_PRESERVE) {
-                $parsed = str_replace(array("\r", "\n"), "", $parsed);
+                $parsed = str_replace(["\r", "\n"], "", $parsed);
 
             // Normalize
             } else {
@@ -260,14 +263,14 @@ abstract class AbstractFilter extends AbstractComponent implements Filter {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function setupHooks(Decoda $decoda) {
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function strip(array $tag, $content) {
         $setup = $this->getTag($tag['tag']);

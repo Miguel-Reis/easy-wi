@@ -18,18 +18,18 @@ class CensorHook extends AbstractHook {
     /**
      * List of words to censor.
      *
-     * @type array
+     * @var string[]
      */
-    protected $_blacklist = array();
+    protected $_blacklist = [];
 
     /**
      * Configuration.
      *
-     * @type array
+     * @var array
      */
-    protected $_config = array(
-        'suffix' => array('ing', 'in', 'er', 'r', 'ed', 'd')
-    );
+    protected $_config = [
+        'suffix' => ['ing', 'in', 'er', 'r', 'ed', 'd']
+    ];
 
     /**
      * Read the contents of the loaders into the emoticons list.
@@ -41,7 +41,8 @@ class CensorHook extends AbstractHook {
 
         // Load files from config paths
         foreach ($this->getParser()->getPaths() as $path) {
-            foreach (glob($path . 'censored.*') as $file) {
+            $files = glob($path . 'censored.*') ?: [];
+            foreach ($files as $file) {
                 $this->addLoader(new FileLoader($file));
             }
         }
@@ -79,7 +80,7 @@ class CensorHook extends AbstractHook {
     /**
      * Add words to the blacklist.
      *
-     * @param array $words
+     * @param string[] $words
      * @return \Decoda\Hook\CensorHook
      */
     public function blacklist(array $words) {
@@ -92,7 +93,7 @@ class CensorHook extends AbstractHook {
     /**
      * Return the current blacklist.
      *
-     * @return array
+     * @return string[]
      */
     public function getBlacklist() {
         return $this->_blacklist;
@@ -105,8 +106,8 @@ class CensorHook extends AbstractHook {
      * @return string
      */
     protected function _censor($content) {
-        $pattern = implode('|', array_map(array($this, '_prepareRegex'), $this->getBlacklist()));
-        $content = preg_replace_callback('/(?:^|\b)(?:' . $pattern . ')(?:\b|$)/is', array($this, '_censorCallback'), $content);
+        $pattern = implode('|', array_map([$this, '_prepareRegex'], $this->getBlacklist()));
+        $content = (string)preg_replace_callback('/(?:^|\b)(?:' . $pattern . ')(?:\b|$)/is', [$this, '_censorCallback'], $content);
 
         return $content;
     }
@@ -114,7 +115,7 @@ class CensorHook extends AbstractHook {
     /**
      * Censor a word if its only by itself.
      *
-     * @param array $matches
+     * @param string[] $matches
      * @return string
      */
     protected function _censorCallback($matches) {

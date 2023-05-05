@@ -17,35 +17,35 @@ class UrlFilter extends AbstractFilter {
     /**
      * Configuration.
      *
-     * @type array
+     * @var array
      */
-    protected $_config = array(
-        'protocols' => array('http', 'https', 'ftp', 'irc', 'telnet', 'mailto'),
+    protected $_config = [
+        'protocols' => ['http', 'https', 'ftp', 'irc', 'telnet', 'mailto'],
         'defaultProtocol' => 'http'
-    );
+    ];
 
     /**
      * Supported tags.
      *
-     * @type array
+     * @var array
      */
-    protected $_tags = array(
-        'url' => array(
+    protected $_tags = [
+        'url' => [
             'htmlTag' => 'a',
             'displayType' => Decoda::TYPE_INLINE,
             'allowedTypes' => Decoda::TYPE_INLINE,
-            'attributes' => array(
+            'attributes' => [
                 'default' => true,
                 'target' => '/^(?:blank|parent|top)$/'
-            ),
-            'mapAttributes' => array(
+            ],
+            'mapAttributes' => [
                 'default' => 'href'
-            )
-        ),
-        'link' => array(
+            ]
+        ],
+        'link' => [
             'aliasFor' => 'url'
-        )
-    );
+        ]
+    ];
 
     /**
      * Using shorthand variation if enabled.
@@ -60,7 +60,7 @@ class UrlFilter extends AbstractFilter {
         $defaultProtocol = $this->getConfig('defaultProtocol');
         $hasProtocol = preg_match('/^(' . implode('|', $protocols) . ')/i', $url);
 
-        if (!in_array($defaultProtocol, $protocols)) {
+        if (!in_array($defaultProtocol, $protocols, true)) {
             $defaultProtocol = 'http';
         }
 

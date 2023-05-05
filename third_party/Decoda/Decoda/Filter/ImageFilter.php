@@ -24,29 +24,29 @@ class ImageFilter extends AbstractFilter {
     /**
      * Supported tags.
      *
-     * @type array
+     * @var array
      */
-    protected $_tags = array(
-        'img' => array(
+    protected $_tags = [
+        'img' => [
             'htmlTag' => 'img',
             'displayType' => Decoda::TYPE_INLINE,
             'allowedTypes' => Decoda::TYPE_NONE,
             'contentPattern' => self::IMAGE_PATTERN,
             'autoClose' => true,
-            'attributes' => array(
+            'attributes' => [
                 'default' => self::WIDTH_HEIGHT,
                 'width' => self::DIMENSION,
                 'height' => self::DIMENSION,
                 'alt' => self::WILDCARD
-            ),
-            'htmlAttributes' => array(
+            ],
+            'htmlAttributes' => [
                 'class' => 'decoda-image'
-            )
-        ),
-        'image' => array(
+            ]
+        ],
+        'image' => [
             'aliasFor' => 'img'
-        )
-    );
+        ]
+    ];
 
     /**
      * Use the content as the image source.
@@ -56,10 +56,9 @@ class ImageFilter extends AbstractFilter {
      * @return string
      */
     public function parse(array $tag, $content) {
-
         // If more than 1 http:// is found in the string, possible XSS attack
         if ((mb_substr_count($content, 'http://') + mb_substr_count($content, 'https://')) > 1) {
-            return null;
+            return '';
         }
 
         $tag['attributes']['src'] = $content;
