@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <aRecordMissing>A Record der Domain %domain% nicht auf die IP %ip% konfiguriert</aRecordMissing>
+    <blocksize>Block Größe</blocksize>
+    <defaultdns>Standard Domain</defaultdns>
+    <dirHttpd>Htdocs Verzeichnis</dirHttpd>
+    <dirLogs>Logs Verzeichnis</dirLogs>
+    <defaultDns>Standard Domain</defaultDns>
+    <dns>Domain</dns>
+    <domainNotUsed>Unzulässige Domain %domain% verworfen</domainNotUsed>
+    <error_password_not_match>FTP Passwörter stimmen nicht überein</error_password_not_match>
+    <error_password_not_set>FTP Passwort unzulässig, nicht angegeben, oder Wiederholung nicht angegeben.</error_password_not_set>
+    <fdlInfo>FastDL Info</fdlInfo>
+    <fpmCmd>PHP FPM Start/Reload Befehl</fpmCmd>
+    <fpmConfigPath>PHP FPM Config Pfad</fpmConfigPath>
+    <fpmTemplate>PHP FPM Template</fpmTemplate>
+    <ftpIP>FTP Adresse</ftpIP>
+    <ftpPassword>FTP Passwort</ftpPassword>
+    <ftpPasswordChanged>FTP Passwort geändert</ftpPasswordChanged>
+    <ftpPasswordRepeat>FTP Passwort wiederholen</ftpPasswordRepeat>
+    <ftpPort>FTP Port</ftpPort>
+    <hdd>Speicherplatz</hdd>
+    <hddOverbook>HDD Überbuchen</hddOverbook>
+    <hddUsage>Belegter Speicherplatz</hddUsage>
+    <help_blocksize>Bei den meisten Systemen beträgt die Block Größe 4096. D.h. ein Block enthält 4096 Byte an Daten.</help_blocksize>
+    <help_default_dns>Diese (Sub) Domain kann im Domain Bereich eingegeben werden. Wird sie in diesem entfernt, ist sie inaktiv.</help_default_dns>
+    <help_fdl_attention>Achtung! Es wird empfohlen, dass man je Spiel einen eigenen Unterordner wie cod4, cstrike, css, etc. erstellt und den Ordner in der Config mit angibt.</help_fdl_attention>
+    <help_fdl_hl>Half-Life 1 (CS 1.6, TFC, DOD, etc.) und Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) basierende Server brauchen folgenden Eintrag in der server.cfg</help_fdl_hl>
+	<help_fdl_ut>UnrealEngine basierende Server (UT GOTY, UT2004) brauchen folgenden Eintrag in der server.ini</help_fdl_ut>
+    <help_fdl_cod>Call of Duty Server brauchen folgenden Eintrag in der server.cfg</help_fdl_cod>
+    <help_inode_block_ratio>Bei den meisten Systemen ist das Verhältnis 4. D.h. auf 4 Blöcke kommt ein Inode</help_inode_block_ratio>
+    <help_web_master>Achtung, es wird empfohlen den Host ausschließlich für Fastdownload zu nutzen. Andere Panels und Dienste könnten ansonsten Konflikte und Probleme verursachen. Des Weiteren verursacht Fastdownload regelmäßige Lastspitzen in der Bandbreite, die andere Serverdienste zum Laggen bringen können.</help_web_master>
+    <httpdCmd>HTTPD Start/Reload Befehl</httpdCmd>
+    <inodeBlockRatio>Block/Inode Verhältnis</inodeBlockRatio>
+    <installedHDD>Zugewiesene HDD</installedHDD>
+    <installedVhost>Installierte Vhosts</installedVhost>
+    <maxHDD>Vorhandener Speicherplatz</maxHDD>
+    <maxVhost>Maximale Vhosts</maxVhost>
+    <optional>(optional)</optional>
+    <other>Andere</other>
+    <overbookPercent>Überbuchen um</overbookPercent>
+    <ownFPM>Eigenes PHP FPM Template</ownFPM>
+    <ownVhost>Eigenes Vhosttemplate</ownVhost>
+    <path>Pfad</path>
+    <pathCorrected>Pfad von %pathGiven% zu %pathConverted% zur Domain %domain% korrigiert</pathCorrected>
+    <phpConfiguration>PHP Konfiguration</phpConfiguration>
+    <quotaActive>Quotas Aktivieren</quotaActive>
+    <quotaCmd>Quota Befehl</quotaCmd>
+    <quotaWarning>Achtung! Ohne Quotas kann der User unbegrenzt Dateien hochladen!</quotaWarning>
+    <recreate>Wiederherstellen</recreate>
+    <repquotaCmd>Repquota Befehl</repquotaCmd>
+    <serverType>Servertyp</serverType>
+    <usage>Belegung</usage>
+    <usageType>Vhostgebrauch</usageType>
+    <userGroup>Webserver Gruppe</userGroup>
+    <userAddCmd>Hinzufügen Befehl</userAddCmd>
+    <useDefaultFPM>Benutze Standard PHP FPM Template</useDefaultFPM>
+    <userDelCmd>Löschen Befehl</userDelCmd>
+    <userModCmd>Bearbeiten Befehl</userModCmd>
+    <vhostConfigPath>Vhost Config Speicherpfad</vhostConfigPath>
+    <vhostTemplate>Vhost Template</vhostTemplate>
+    <vhostStoragePath>Vhost Speicherpfad</vhostStoragePath>
+</sprache>

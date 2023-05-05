@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <accounttype>Account type</accounttype>
+    <accounttype_admin>Admin</accounttype_admin>
+    <accounttype_reseller>Reseller</accounttype_reseller>
+    <accounttype_user>User</accounttype_user>
+    <active>Active</active>
+    <activeIn>Deactivated</activeIn>
+    <activeRegister>Registration pending</activeRegister>
+    <addon>Addon management (user)</addon>
+    <adresse>Server address</adresse>
+    <badlogins>Allowed number of bad logins reached!</badlogins>
+    <badloginsreset>Reset failed attempts:</badloginsreset>
+    <bear2>Change user data</bear2>
+    <bez>Payment</bez>
+    <birthday>Birthday</birthday>
+    <creationTime>Created at</creationTime>
+    <country>Country</country>
+    <einz>Automatic debit transfer system</einz>
+    <email>E-mail</email>
+    <error_cname>Error: Bad username!</error_cname>
+    <error_id>No user selected:</error_id>
+    <error_in>Not all required fields have been filled out; or illegal characters have been used.</error_in>
+    <error_mail>Bad e-mail address</error_mail>
+    <error_mail_exists>E-mail already in use with another user.</error_mail_exists>
+    <error_pass>Error: Bad password!</error_pass>
+    <error_passw_succ>Passwords did not match.</error_passw_succ>
+    <example>Example:</example>
+    <fastdl2>Fastdownload access data</fastdl2>
+    <fastdl>Use Fastdownload</fastdl>
+    <fname>Last name</fname>
+    <freeips>Unused IP addresses</freeips>
+    <ftpaccess>FTP access</ftpaccess>
+    <ftppsw>FTP password</ftppsw>
+    <groupname>Group name</groupname>
+    <gserver>Game server</gserver>
+    <han>Mobile phone</han>
+    <heading_add>Add user</heading_add>
+    <heading_detail>User details</heading_detail>
+    <heading_list>User overview</heading_list>
+    <help_substitutes_list>Additional users can be added here who should also have access to individual services.</help_substitutes_list>
+    <hnum>House Number</hnum>
+    <inst>Installed server</inst>
+    <ips>IPv4 addresses:</ips>
+    <ips_possible1>1.1.1.1</ips_possible1>
+    <ips_possible2>1.1.1.3/6</ips_possible2>
+    <mail_backup>Send an e-mail when backup is created/restored.</mail_backup>
+    <mail_gsupdate>Send an e-mail when master server is updated.</mail_gsupdate>
+    <mail_securitybreach>Send an e-mail when game server files are manipulated.</mail_securitybreach>
+    <mail_serverdown>Send an e-mail when server cannot be reached.</mail_serverdown>
+    <mail_ticket>Send an e-mail when new support ticket is created.</mail_ticket>
+    <mail_vserver>Send an e-mail when VPS is created, or rescue is started.</mail_vserver>
+    <max>Maximum</max>
+    <miniroot>Root</miniroot>
+    <modfastdl>Edit Fastdownload access data</modfastdl>
+    <nickname>Nickname</nickname>
+    <passw>Change panel password</passw>
+    <passw_1>Enter new password</passw_1>
+    <passw_2>Repeat new password</passw_2>
+    <passw_succ_ae>Successfully changed the password</passw_succ_ae>
+    <password>Password</password>
+    <paypal>PayPal</paypal>
+    <plz>Post code</plz>
+    <rch>on account</rch>
+    <reset>Reinstall</reset>
+    <restart>Restart</restart>
+    <right>Change user permissions</right>
+    <root>Root</root>
+    <salutation>Salutation</salutation>
+    <salutation2>Mr</salutation2>
+    <salutation3>Ms</salutation3>
+    <server>Server</server>
+    <serverdata>Installed servers</serverdata>
+    <settings>Panel settings</settings>
+    <show_help_text>Show help boxes</show_help_text>
+    <shown>Results per page:</shown>
+    <socialConnect>Connect with</socialConnect>
+    <socialRemove>Remove connection with</socialRemove>
+    <socialSignin>Sign in with</socialSignin>
+    <stadt>Town</stadt>
+    <str>Street</str>
+    <switch>Switch to user</switch>
+    <tel>Phone number</tel>
+    <tickets>Support tickets</tickets>
+    <updateTime>Updated at</updateTime>
+    <user>Username</user>
+    <user_users>User adminstration</user_users>
+    <user_admins>Admin adminstration</user_admins>
+    <userdata>User data</userdata>
+    <usersettings>User settings</usersettings>
+    <usertickets>Support tickets</usertickets>
+    <user_create>The following user has been successfully created.</user_create>
+    <user_server>Game server deleted from:</user_server>
+    <vname>First name</vname>
+    <wipsw>Web interface password</wipsw>
+</sprache>

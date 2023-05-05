@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Aktiv</active>
+    <action>Aktion</action>
+	<add>Hinzufügen</add>
+	<addon>Addons</addon>
+    <addon2>Addon</addon2>
+    <all>Alle</all>
+    <api>API</api>
+    <apiAuth>Externe Authentifizierung</apiAuth>
+    <appMaster>App Master</appMaster>
+    <appRoot>App/Game Master</appRoot>
+	<backup>Backup</backup>
+	<change>ändern</change>
+    <chosenNoResult>Kein Suchergebnis für</chosenNoResult>
+    <chosenSelect>Bitte triff eine Auswahl</chosenSelect>
+    <columns>Custom Columns</columns>
+    <comments>Kommentare</comments>
+    <connect_ip_only>Primäre IP/Domain für Verwaltung (DMZ), weitere für externe Verbindungen</connect_ip_only>
+	<databases>DB</databases>
+    <dataTablesEmpty>Keine Einträge zum anzeigen</dataTablesEmpty>
+    <dataTablesEmptyTable>Keine Daten in der Tabelle verfügbar</dataTablesEmptyTable>
+    <dataTablesFiltered> (aus _MAX_ Einträgen insgesamt)</dataTablesFiltered>
+    <dataTablesFirst>Erste</dataTablesFirst>
+    <dataTablesInfo>Zeige _START_ bis _END_ von _TOTAL_ Einträgen</dataTablesInfo>
+    <dataTablesLast>Letzte</dataTablesLast>
+    <dataTablesMenu>_MENU_ Einträge je Seite</dataTablesMenu>
+    <dataTablesNext>Nächste</dataTablesNext>
+    <dataTablesNoRecords>Keine Einträge zum anzeigen</dataTablesNoRecords>
+    <dataTablesPrevious>Vorherige</dataTablesPrevious>
+    <dataTablesSearch>Suche: </dataTablesSearch>
+	<datetime>Datum/Uhrzeit</datetime>
+    <dedicated>Dedizierte</dedicated>
+	<del>Löschen</del>
+    <delSafe>Sicheres Löschen</delSafe>
+    <delAny>In jedem Fall Löschen</delAny>
+    <delDB>Aus der Datenbank Löschen</delDB>
+    <description>Beschreibung</description>
+    <domains>Domains</domains>
+    <downloads>Downloads</downloads>
+    <edit>Bearbeiten</edit>
+    <error_connect>Fehler beim Verbinden zum Server</error_connect>
+    <errors>Fehler</errors>
+    <exec>Ausführen</exec>
+    <export>Exportieren</export>
+    <externalID>Externe ID</externalID>
+    <externalIP>Externe IP</externalIP>
+    <fastdownload>Fastdownload</fastdownload>
+    <feeds>Feeds</feeds>
+    <file>Datei</file>
+    <free>Frei</free>
+    <game>Spiel</game>
+    <gameroot>Game Rootserver</gameroot>
+	<gameserver>Gameserver</gameserver>
+    <generalsettings>Allgemeine Einstellungen</generalsettings>
+    <greating_home>Herzlich Willkommen im %name% Webinterface!</greating_home>
+	<groups>Gruppen</groups>
+    <help_home>In Ihrem Dashboard finden Sie eine Übersicht über den Status Ihrer Game- und Voiceserver, sowie die letzten Nachrichten für Spiele von Valve (Counter-Strike, Team Fortress, ...). Bitte beachten Sie, dass die hier aufgeführten Statusinformationen nur alle %n% Minuten aktualisiert werden. Das heißt beispielsweise, dass ein Gameserver, den Sie gerade neugestartet haben, noch eine Zeit lang als abgestürzt angezeigt werden kann, auch wenn er de facto bereits wieder erreichbar ist.</help_home>
+    <help_sidebar>Die Status Informationen werden alle %n% Minuten aktualisiert.</help_sidebar>
+	<hostsystem>Hostsystem</hostsystem>
+	<hotline>Hotline</hotline>
+    <inactive>Inaktiv</inactive>
+    <import>Importieren</import>
+	<imprint>Impressum</imprint>
+    <jobs>Jobs</jobs>
+    <jobPending>Job ausstehend</jobPending>
+	<last>Dein letzter Login war am: </last>
+	<lendserver>Test/Leih Server</lendserver>
+	<licence>Das Lizenzmaximum wurde erreicht.</licence>
+    <licence_version>Sie sind nicht berechtigt diese Version zu nutzen!</licence_version>
+	<logs>Logs</logs>
+	<master>Master</master>
+    <master_apps>Master Apps</master_apps>
+    <migration>Umzugsservice</migration>
+	<mod>Ändern</mod>
+    <modules>Module</modules>
+    <moreInfo>Mehr Informationen</moreInfo>
+    <network>Netzwerk</network>
+	<news>News</news>
+	<no>Nein</no>
+	<overview>Übersicht</overview>
+	<page>Seite</page>
+	<pages>Seiten</pages>
+	<password>Passwort</password>
+    <registration>Registration</registration>
+    <reinstall>Reinstall</reinstall>
+    <repair>Reparieren</repair>
+	<reseller>Reseller</reseller>
+	<root>Rootserver</root>
+	<save>Speichern</save>
+    <search>Suche</search>
+    <server>Server</server>
+	<settings>Einstellungen</settings>
+	<shown>Ergebnisse pro Seite</shown>
+    <start>Starten</start>
+	<stats>Statistiken</stats>
+    <status>Status</status>
+    <status_crashed>Abgestürzt</status_crashed>
+    <status_inactive>Deaktiviert</status_inactive>
+    <status_ok>OK</status_ok>
+    <status_password>Passwort</status_password>
+    <status_server_tag>Servertag</status_server_tag>
+    <status_stop>Gestopt</status_stop>
+    <status_space>Speicher</status_space>
+    <status_space_mount>Eingehangen: </status_space_mount>
+    <status_space_size>Größe: </status_space_size>
+    <status_space_used>Benutzt: </status_space_used>
+    <status_space_free>Frei: </status_space_free>
+    <stop>Stoppen</stop>
+    <subnets>Subnets</subnets>
+    <substitutes>Vertreter</substitutes>
+	<support2>Neues Supportticket</support2>
+	<support>Support</support>
+	<sure>Sind Sie sicher?</sure>
+    <sure_delete>Sind Sie sicher? Alle Daten werden beim Zielserver gelöscht!</sure_delete>
+    <system_check>System Check</system_check>
+	<template>Template</template>
+	<templates>Images/Templates</templates>
+	<traffic>Traffic</traffic>
+	<update>Aktualisieren</update>
+    <update_easy>Easy-Wi Update</update_easy>
+    <upload>Upload</upload>
+    <use>Anwenden</use>
+    <used>Belegt</used>
+	<user>Benutzer</user>
+    <userImport>Benutzer Import</userImport>
+	<virtual>VServer</virtual>
+	<versioncheck>Versionsüberprüfung</versioncheck>
+	<voiceserver>Voiceserver</voiceserver>
+	<vor>Vor</vor>
+    <webspace>Webspace</webspace>
+	<welcome>Willkommen: </welcome>
+	<yes>Ja</yes>
+	<zurueck>Zurück</zurueck>
+    <example>Beispiel Modul</example>
+</sprache>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <abkuerz>Encurtar</abkuerz>
+    <active>Activo</active>
+    <addon2>Nome de menu</addon2>
+    <addon>Nome de pasta em "masteraddons/mastermaps"</addon>
+    <addons_maps>Pack de Mapas</addons_maps>
+    <addons_tools>Ferramentas de servidor</addons_tools>
+    <addon_add>Addon adicionado com sucesso</addon_add>
+    <addon_del>Removendo addon</addon_del>
+    <addon_del_from>Addon removido do servidor: </addon_del_from>
+    <addon_del_from_fail>Impossivel remover addon do servidor: </addon_del_from_fail>
+    <addon_inst>Instalando addon</addon_inst>
+    <addon_ud>Addon atualizado com sucesso</addon_ud>
+    <add_addon>Criar addon</add_addon>
+    <all>Todos</all>
+    <aname>Nome do addon</aname>
+    <bin>Binário</bin>
+    <bin_folder>Pasta do binário (e.g. orangebox)</bin_folder>
+    <configs>Configs editáveis</configs>
+    <configedit>Cvars que o utilizador não deve modificar</configedit>
+    <copyStartBinary>Copiar Binário</copyStartBinary>
+    <del_temp>Remover template</del_temp>
+    <description>Descrição</description>
+    <error_exist>Erro: Addon já existe.</error_exist>
+    <error_id>Erro: Nenhum servidor selecionado!</error_id>
+    <failed>Erro: Impossivel conectar ao servidor.</failed>
+    <folder>Pasta do servidor</folder>
+    <folders>Pastas a serem removidas.</folders>
+    <fps>FPS do servidor</fps>
+    <ftpAccess>Acesso FTP</ftpAccess>
+    <game2>Jogo ou tipo de jogo</game2>
+    <game>Nome do jogo</game>
+    <heading_addons>Addons do servidor de jogo</heading_addons>
+    <heading_template>Templates do servidor de jogo</heading_template>
+    <help_addons>Com o nosso painel facilmente podes gerir plugins, addons, configs e mapas no teu servidor de jogo. Iremos manter tudo atualizado, para que não necessite de perder o seu tempo com tal.</help_addons>
+    <ip>Endereço de IP do servidor de jogo</ip>
+    <iptables>IP tables</iptables>
+    <liveConsole>Consola</liveConsole>
+    <map>Pack de mapas</map>
+    <maps>Pack de mapas</maps>
+    <mod>Pasta de mod (e.g. cstrike or dod)</mod>
+    <modcmds>Comandos relativos a mods</modcmds>
+    <mods2>Mods de jogo</mods2>
+    <mods>Mods</mods>
+    <multi>Plataforma</multi>
+    <password>Password</password>
+    <port>Porta de servidor de jogo</port>
+    <portMax>Porta máxima</portMax>
+    <portStep>Espaço de portas para o próximo servidor</portStep>
+    <protect>Modo de Protecção</protect>
+    <protectedSaveCFGs>Ficheiros a manter quando modo de protecção é alterado</protectedSaveCFGs>
+    <ramLimited>Ram máxima</ramLimited>
+    <rcon>Password (RCON)</rcon>
+    <requires>Necessita</requires>
+    <rmcmd>Remover do comando de inicio</rmcmd>
+    <servername>Nome do servidor</servername>
+    <showg>Mostrar addons para</showg>
+    <shown>Resultados por página</shown>
+    <single>Jogo</single>
+    <slots>Slots do servidor</slots>
+    <start>Commando de inicio</start>
+    <startmap>Mapa de inicio</startmap>
+    <startmapgroup>Grupo de mapa de inicio</startmapgroup>
+    <steam>Jogo steam</steam>
+    <steamGameserverToken>Steam Token do servidor</steamGameserverToken>
+    <sure2>Atenção! Se um utilizador instalou este addon, o addon também será removido da sua conta!</sure2>
+    <sure3>Atenção! O servidor do utilizador com este jogo também será removido!</sure3>
+    <tick>Tickrate</tick>
+    <tool>Ferramenta do servidor</tool>
+    <tools>Ferramentas do servidor, addons, packs de config</tools>
+    <tvport>Porta SourceTV</tvport>
+    <type2>Addon para</type2>
+    <type>Mapa ou ferramenta do servidor</type>
+    <useQueryPort>Porta Query</useQueryPort>
+</sprache>

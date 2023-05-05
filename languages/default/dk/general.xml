@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Aktiver</active>
+    <action></action>
+	<add>Tilføj</add>
+	<addon>tilføjelsesprogrammer</addon>
+    <addon2>Addon</addon2>
+    <all>Alle</all>
+    <api>API</api>
+    <apiAuth>ekstern godkendelse</apiAuth>
+    <appMaster></appMaster>
+    <appRoot></appRoot>
+	<backup>Sikkerhedskopi</backup>
+	<change></change>
+    <chosenNoResult></chosenNoResult>
+    <chosenSelect></chosenSelect>
+    <columns>Tilpassede kolonner</columns>
+    <comments>Kommentarer</comments>
+	<databases>Databaser</databases>
+	<datetime></datetime>
+    <dedicated>Dedikeret</dedicated>
+	<del>Slet</del>
+    <delSafe>Sikker Slat</delSafe>
+    <delAny>Slet i hvert fald</delAny>
+    <delDB>Fjern fra database</delDB>
+    <description>Beskrivelse</description>
+    <domains>Domains</domains>
+    <feeds>Feeds</feeds>
+    <error_connect></error_connect>
+	<edit>Rediger</edit>
+    <errors></errors>
+	<exec></exec>
+    <externalID></externalID>
+    <externalIP></externalIP>
+	<fastdownload>Fastdownload</fastdownload>
+    <free></free>
+	<game></game>
+	<gameserver>Spilserver</gameserver>
+    <gameroot>Spil Rodenserver</gameroot>
+    <generalsettings>Generelle indstillinger</generalsettings>    
+	<groups>Grupper</groups>
+	<hostsystem>Værtssystem</hostsystem>
+	<hotline>Hotline</hotline>
+    <inactive></inactive>
+	<imprint>Impressum</imprint>
+    <jobs>Job</jobs>
+    <jobPending>Job afventer</jobPending>
+	<last>Din sidste login var: </last>
+	<lendserver>Lendserver</lendserver>
+	<licence>Licence Maximum er nået.</licence>
+    <licence_version>Du har ikke tilladelse til at køre denne version!</licence_version>
+	<logs>Logs</logs>
+	<master>Master</master>
+    <master_apps>Master apps</master_apps>
+    <migration>Flytningsservice</migration>
+	<mod>Rediger</mod>
+    <modules>Module</modules>
+    <moreInfo></moreInfo>
+    <network>Network</network>
+	<news>Nyheder</news>
+	<no>Nej</no>
+	<overview>Oversigt</overview>
+	<page>Side</page>
+	<pages>Sider</pages>
+	<password></password>
+    <registration>Registrering</registration>
+    <reinstall></reinstall>
+    <repair>Reparer</repair>
+	<reseller>Forhandler</reseller>
+	<root>Rootserver</root>
+	<save>Optag</save>
+    <search>Søg</search>
+    <server>Server</server>
+	<settings>Indstillinger</settings>
+	<shown>Resultater per side</shown>
+    <start>Start</start>
+	<stats>Statistik</stats>
+    <status>Status</status>
+    <status_crashed></status_crashed>
+    <status_inactive></status_inactive>
+    <status_ok></status_ok>
+    <status_password></status_password>
+    <status_server_tag></status_server_tag>
+    <status_stop></status_stop>
+    <stop>Stop</stop>
+    <status_space>Opbevaring</status_space>
+    <status_space_mount>Monteret: </status_space_mount>
+    <status_space_size>Størrelse: </status_space_size>
+    <status_space_used>Brugt: </status_space_used>
+    <status_space_free>Ledig: </status_space_free>
+    <subnets>Subnets</subnets>
+    <substitutes>Suppleanter</substitutes>
+	<support2>Ny Support Billet</support2>
+	<support>Support</support>
+	<sure>Er du sikker?</sure>
+    <sure_delete>Er du sikker? Alle data på målet server vil blive slettet!</sure_delete>
+	<template>Skabelon</template>
+	<templates>Images/Templates</templates>
+	<traffic>Trafik</traffic>
+	<update>Opdater</update>
+    <update_easy>Easy-Wi Opdater</update_easy>
+    <upload>Upload</upload>
+    <use>Brug</use>
+    <used></used>
+	<user>Bruger</user>
+    <userImport>Bruger Importer</userImport>
+	<virtual>Virtuelle Server</virtual>
+	<versioncheck>Version Tjek</versioncheck>
+	<voiceserver>Voiceserver</voiceserver>
+	<vor>Videresend</vor>
+    <webspace>Webspace</webspace>
+	<welcome>Velkommen: </welcome>
+	<yes>Ja</yes>
+	<zurueck>Baglæns</zurueck>
+    <example>Exemples Module</example>
+</sprache>

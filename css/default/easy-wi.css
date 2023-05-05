@@ -1,0 +1,95 @@
+
+@media (min-width: 979px) {
+    #content {
+        padding-top: 60px;
+        padding-bottom: 40px;
+    }
+}
+.footable {
+     border-collapse: separate;
+     border-spacing: 0;
+     width: 100%;
+     border: solid #ccc 1px;
+ }
+
+.footable.breakpoint > tbody > tr > td.expand {
+    background-image:url("../../images/footable/plus.png");
+    background-repeat:no-repeat;
+    background-position:5px center;
+    padding-left: 40px;
+}
+
+.footable.breakpoint > tbody > tr.footable-detail-show > td.expand {
+    background-image:url("../../images/footable/minus.png");
+}
+
+.footable.breakpoint > tbody > tr.footable-row-detail {
+    background: #eee;
+}
+
+.footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
+    cursor: pointer;
+}
+
+.footable > tbody > tr > td.footable-cell-detail {
+    border-left: none;
+}
+
+.footable > thead > tr > th.footable-first-column, .footable > thead > tr > td.footable-first-column, .footable > tbody > tr > td.footable-first-column {
+    border-left: none;
+}
+
+.footable > tbody img {
+    vertical-align:middle;
+}
+
+.navbar .btn {
+    margin-top: 0;
+}
+
+table form {
+    margin-bottom: 0;
+}
+
+.navbar-logout {
+    margin-right: 10px;
+}
+
+.btn {
+    white-space: nowrap;
+}
+
+.collapse :not(in) {
+    margin-bottom: 0;
+}
+
+/* Remove the horizontal scroll in desktop view */
+@media (min-width: 768px) {
+    .table-responsive {
+        overflow-x: hidden;
+    }
+}
+
+.formmail{
+	background-color:#fff;
+	border: 2px solid #E2E7E9;
+	margin:10px;
+	width:99%;
+	border-radius: 5px;
+	border-spacing: 2px;
+}
+.formmail_left{
+	text-align:right;
+	padding:5px;
+}
+.formmail_right{
+	background-color: #D0E1F7;
+    text-align: left;
+    padding:1px 2px;
+}
+.formmailfield{
+	width:50%;
+}
+.twitter-button-margin {
+    margin: 14px 5px 0;
+}

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<bad_ca>Der eingegebene Wert stimmte nicht mit dem Captcha überein.</bad_ca>
+	<bad_up>Der Benutzer existiert nicht, oder das Passwort war falsch</bad_up>
+	<back>Zurück</back>
+	<banned>Zu viele fehlerhafte Loginversuche. Bitte fordern sie ein neues Passwort an, oder kontaktieren uns.</banned>
+	<captcha>Captcha</captcha>
+	<email>E-Mail oder Username</email>
+	<exp>Ihre Lizenz ist abgelaufen.</exp>
+	<heading>Login</heading>
+    <ipBad>Inkorrekte IP: </ipBad>
+    <ipOK>Erlaubte IP(s) ist/sind </ipOK>
+	<linkexpired>Link ist abgelaufen.</linkexpired>
+    <multipleHeader>Mehrere Benutzer gefunden</multipleHeader>
+    <multipleHelper>Es wurden mehrere Benutzer zu dem Login von %sp% gefunden. Bitte wählen einen aus</multipleHelper>
+    <multipleHelperEndpoint>Im Regelfall muss eine App bei dem jeweiligen Service Provider angelegt werden. Beim Erstellen der App erhält man einen Key und Zugangstoken, die beide in Easy-WI hinterlegt werden müssen. In der App muss meistens der Endpunkt des SocialAuth definiert werden. Dieser ist bei Easy-Wi %url%</multipleHelperEndpoint>
+	<nouser>Ein Benutzer mit diesem Namen, oder Email existiert nicht.</nouser>
+	<password>Passwort</password>
+    <passwdlost>Ich habe mein Passwort vergessen</passwdlost>
+	<passwordr>Passwort vergessen?</passwordr>
+	<passwordrepeat>Passwort wiederholen</passwordrepeat>
+	<passwordreset>Passwort zurücksetzen</passwordreset>
+	<passwordreseted>Passwort wurde aktualisiert.</passwordreseted>
+	<pwnomatch>Passwörter stimmen nicht überein.</pwnomatch>
+	<send>Falls ein E-Mail Account gefunden werden konnte, ist ein Betstätigungslink versendet worden.</send>
+	<sus>Ihr Account ist deaktiviert worden. Bitte wenden sie sich an ihren Anbieter.</sus>
+	<sus_heading>Achtung!</sus_heading>
+	<user>Benutzername</user>
+    <urlBad>Inkorrekte URL</urlBad>
+    <urlOK>Erlaubte URL ist </urlOK>
+</sprache>

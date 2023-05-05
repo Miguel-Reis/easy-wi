@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Activo</active>
+    <activeGS>Ativar partilha de servidor de jogo para</activeGS>
+    <activeVS>Ativar partilha de servidor de voz para</activeVS>
+    <all>Todos</all>
+    <anonymous>Anónimo</anonymous>
+    <available>Disponível</available>
+    <free>Disponível em</free>
+    <ftpupload>Permitir upload de demo</ftpupload>
+    <ftpuploadpath>Demo FTP</ftpuploadpath>
+    <ipblock>Alguém com o seu endereço de IP, mas não você, já partilhou um servidor!</ipblock>
+    <lend>Partilhar</lend>
+    <lendaccess>Partilhar via</lendaccess>
+    <lendhostip>WebhostIP se XML</lendhostip>
+    <lendhostkey>Key se XML</lendhostkey>
+    <maxplayer>Máximo de Slots</maxplayer>
+    <maxtime>Tempo máximo de partilha (minutos)</maxtime>
+    <minplayer>Minimo de Slots</minplayer>
+    <mintime>Tempo minimo de partilha (minutos)</mintime>
+    <minutes>Minutos</minutes>
+    <nextcheck>Próxima verificação de estado</nextcheck>
+    <nextfree>De acordo com o plano, o próximo servidor de jogo estará livre em</nextfree>
+    <nextfreevo>De acordo com o plano, o próximo servidor de voz estará livre em</nextfreevo>
+    <playersteps>Slot steps</playersteps>
+    <ready>Preparado</ready>
+    <registered>Registado</registered>
+    <settingsGsAnonymous>Configurações do servidor de jogo do utilizador anónimo</settingsGsAnonymous>
+    <settingsGsGeneral>Configurações gerais do servidor de jogo</settingsGsGeneral>
+    <settingsGsRegistered>Configurações do servidor de jogo do utilizador registado</settingsGsRegistered>
+    <settingsVsAnonymous>Configurações do servidor de voz do utilizador anónimo</settingsVsAnonymous>
+    <settingsVsGeneral>Configurações gerais do servidor de voz</settingsVsGeneral>
+    <settingsVsRegistered>Configurações do servidor de voz do utilizador registado</settingsVsRegistered>
+    <shutdownempty>Encerrar servidor vazio</shutdownempty>
+    <shutdownemptytime>Tempo de execução mínimo (minutos)</shutdownemptytime>
+    <timesteps>Minute steps</timesteps>
+    <timeleft>Tempo restante</timeleft>
+    <used>Utilizado</used>
+    <usedserver>Servidor utilizado</usedserver>
+</sprache>

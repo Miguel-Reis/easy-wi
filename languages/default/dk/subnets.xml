@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <error_server_exists></error_server_exists>
+    <help_vlan></help_vlan>
+    <netmask></netmask>
+    <subnet></subnet>
+    <subnetOptions></subnetOptions>
+    <subnetStart></subnetStart>
+    <subnetStop></subnetStop>
+    <vlan></vlan>
+    <vlanName></vlanName>
+</sprache>

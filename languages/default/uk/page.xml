@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <about>About</about>
+    <active>Active</active>
+    <admin>Admin</admin>
+    <author>Author</author>
+    <categories>Categories</categories>
+    <commentMinLength>Comment: Minimum length</commentMinLength>
+    <commentsModerated>Comment: Moderated</commentsModerated>
+    <contact>Contact</contact>
+    <date>Date</date>
+    <defaultpage>Default page</defaultpage>
+    <external>External</external>
+    <externalURL>External URL</externalURL>
+    <gallery>Gallery</gallery>
+    <intern>Intern</intern>
+    <keyword>Keyword</keyword>
+    <keywords>Keywords</keywords>
+    <languages>Languages</languages>
+    <mailRequired>Comment: E-mail required</mailRequired>
+    <mailSend>The e-mail has been sent.</mailSend>
+    <maxnews>Show the last X news messages</maxnews>
+    <message>Message</message>
+    <MSIE>Internet Explorer is outdated and does not meet the minimum requirements to use this panel. The display of the page may be corrupted. Please use a different browser.</MSIE>
+    <moderate>Moderation required:</moderate>
+    <name>Name</name>
+    <naviDisplay>Display at navigation</naviDisplay>
+    <newer>Most recent</newer>
+    <news_add>Add news</news_add>
+    <newssidebar_textlength>Text length sidebar news</newssidebar_textlength>
+    <older>Older</older>
+    <pages>Pages with</pages>
+    <page_add>Add new page</page_add>
+    <page_dl>Delete page</page_dl>
+    <page_mod>Edit page</page_mod>
+    <posted>Posted by</posted>
+    <preview>Preview</preview>
+    <protectioncheck>Protection check</protectioncheck>
+    <public>Public</public>
+    <register>Registration</register>
+    <registerAccountOK>Your account has been created.</registerAccountOK>
+    <registerActivated>The account has been activated.</registerActivated>
+    <registerAdmin>Registration successful. An admin needs to activate your account.</registerAdmin>
+    <registerBlockIPs>Prevent IPs from registering</registerBlockIPs>
+    <registerBlockMails>Prevent e-mail addresses from registering</registerBlockMails>
+    <registerByMailActivation>Mail activation</registerByMailActivation>
+    <registerByMailAdminActivation>Admin activation</registerByMailAdminActivation>
+    <registerDirectActive>Direct</registerDirectActive>
+    <registerErrorActivatedFailed>No account could be found to be activated.</registerErrorActivatedFailed>
+    <registerErrorBot>Please activate JavaScript.</registerErrorBot>
+    <registerErrorCname>Please use another nickname.</registerErrorCname>
+    <registerErrorCookies>Please activate (session) cookies.</registerErrorCookies>
+    <registerErrorMail>Please use another e-mail address.</registerErrorMail>
+    <registerErrorTou>Please accept the terms of use!</registerErrorTou>
+    <registerErrorPassword>The passwords do not match.</registerErrorPassword>
+    <registerErrorPassword2>Please use a secure password with at least 8 characters containing lower and upper case letters, numbers, and special characters. An example for a good password: "AKha%asLsdh12".</registerErrorPassword2>
+    <registerErrorPassword3>Please enter a password.</registerErrorPassword3>
+    <registerErrorUnknown>An unknown error occurred. Please try again.</registerErrorUnknown>
+    <registerMailSend>Registration successful. You should receive an e-mail soon.</registerMailSend>
+    <registerQuestions>Protection question against bots</registerQuestions>
+    <release>Publish</release>
+    <released>Published</released>
+    <rssfeed>Activate RSS feed</rssfeed>
+    <search>Search</search>
+    <seo>Rewrite URLs für SEO</seo>
+    <sitemap>Sitemap</sitemap>
+    <spamBlockLinks>Links in comments</spamBlockLinks>
+    <spamBlockWords>Word blacklist</spamBlockWords>
+    <spamFilter>Spam filter</spamFilter>
+    <spamLanguageFilter>Language filter</spamLanguageFilter>
+    <subpage>Subpage of</subpage>
+    <tag>Tag</tag>
+    <title>Title</title>
+    <tou>Terms of use</tou>
+    <update>Update</update>
+    <upload>Upload</upload>
+    <rssfeed_fulltext>Complete text at the RSS feed</rssfeed_fulltext>
+    <rssfeed_textlength>RSS feed length</rssfeed_textlength>
+    <sort>Sort</sort>
+    <sort_new>Sort new</sort_new>
+</sprache>

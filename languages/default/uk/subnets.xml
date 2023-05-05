@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <error_server_exists>Error: One or more root/vserver already exists with the same IP in this subnnet!</error_server_exists>
+    <help_vlan>Easy-WI configures DHCP only. Switches and routers need to be configured manually regarding VLANs.</help_vlan>
+    <netmask>Netmask</netmask>
+    <subnet>Subnet</subnet>
+    <subnetOptions>Subnet Options</subnetOptions>
+    <subnetStart>Subnet Start</subnetStart>
+    <subnetStop>Subnet Stop</subnetStop>
+    <vlan>Vlan</vlan>
+    <vlanName>Vlan Name</vlanName>
+</sprache>
