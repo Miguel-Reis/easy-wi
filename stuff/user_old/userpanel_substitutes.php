@@ -97,18 +97,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $vd[$row['dnsID']] = $row['dns'];
         }
-
-        $query = $sql->prepare("SELECT `id`,`ip` FROM `virtualcontainer` WHERE `userid`=? AND `resellerid`=? AND `active`='Y'");
-        $query->execute(array($user_id,$reseller_id));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $vs[$row['id']] = $row['ip'];
-        }
-
-        $query = $sql->prepare("SELECT `dedicatedID`,`ip` FROM `rootsDedicated` WHERE `userID`=? AND `resellerID`=? AND `active`='Y'");
-        $query->execute(array($user_id,$reseller_id));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $ro[$row['dedicatedID']] = $row['ip'];
-        }
     }
 
     if (!$ui->st('action', 'post') and $ui->st('d', 'get') == 'ad') {

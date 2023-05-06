@@ -65,8 +65,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $wv = array();
         $vo = array();
         $vd = array();
-        $vs = array();
-        $ro = array();
 
         $query = $sql->prepare("SELECT `id`,`dbname` FROM `mysql_external_dbs` WHERE `uid`=? AND `resellerid`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
@@ -98,17 +96,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $vd[$row['dnsID']] = $row['dns'];
         }
 
-        $query = $sql->prepare("SELECT `id`,`ip` FROM `virtualcontainer` WHERE `userid`=? AND `resellerid`=? AND `active`='Y'");
-        $query->execute(array($user_id,$reseller_id));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $vs[$row['id']] = $row['ip'];
-        }
-
-        $query = $sql->prepare("SELECT `dedicatedID`,`ip` FROM `rootsDedicated` WHERE `userID`=? AND `resellerID`=? AND `active`='Y'");
-        $query->execute(array($user_id,$reseller_id));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $ro[$row['dedicatedID']] = $row['ip'];
-        }
     }
 
     if (!$ui->st('action', 'post') and $ui->st('d', 'get') == 'ad') {
@@ -232,7 +219,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
             }
 
-            foreach (array('gs','wv','db','vo','vd','vs','ro') as $v) {
+            foreach (array('gs','wv','db','vo','vd') as $v) {
 
                 if ($ui->id($v, 10, 'post')) {
 

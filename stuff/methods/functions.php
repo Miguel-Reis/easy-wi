@@ -233,12 +233,6 @@ if (!function_exists('passwordgenerate')) {
         if ($type == 'root') {
             $query = $sql->prepare("SELECT `os`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword`,`publickey`,`keyname`,`ftpport`,`notified`,`cores`,`hyperthreading`,`resellerid`,`install_paths` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
 
-        } else if ($type == 'virtualhost') {
-            $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`notified`,`resellerid` FROM `virtualhosts` WHERE `id`=:serverID LIMIT 1");
-
-        } else if ($type == 'dhcp') {
-            $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`notified`,`resellerid` FROM `dhcpdata` WHERE `id`=:serverID LIMIT 1");
-
         } else {
             $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`cfgdir`,`notified`,`resellerid` FROM `eac` WHERE `resellerid`=:serverID LIMIT 1");
         }
@@ -251,22 +245,6 @@ if (!function_exists('passwordgenerate')) {
             $steamAccount = '';
             $steamPassword = '';
             $installPaths = '';
-
-            if ($type == 'root') {
-                $ftpport = $row['ftpport'];
-                $cores = $row['cores'];
-                $hyperthreading = $row['hyperthreading'];
-                $steamAccount = $row['decryptedsteamAccount'];
-                $steamPassword = $row['decryptedsteamPassword'];
-                $installPaths = $row['install_paths'];
-
-            } else if ($type == 'eac') {
-
-                $ftpport = $row['cfgdir'];
-
-            } else {
-                $ftpport = '';
-            }
 
             $os = (isset($row['os'])) ? $row['os'] : '';
 
@@ -285,26 +263,17 @@ if (!function_exists('passwordgenerate')) {
         $query->execute();
         $gsCount = (int) $query->fetchColumn();
 
-        $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
-        $query->execute();
-        $vCount = (int) $query->fetchColumn();
-
         $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
         $query->execute();
         $voCount = (int) $query->fetchColumn();
 
-        $query = $sql->prepare("SELECT `dedicatedID` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` LEFT JOIN `userdata` r ON d.`resellerID`= r.`id` WHERE r.`active`!='N' AND u.`active`!='N' AND d.`active`!='N'");
-        $query->execute();
-        $dCount = (int) $query->fetchColumn();
-
-        $count = $gsCount + $vCount + $voCount + $dCount;
+        $count = $gsCount + $voCount;
 
         $sprache = getlanguagefile('licence', $user_language, $resellerid);
         $s = $sprache->unlimited;
         $mG = $s;
         $mVs = $s;
         $mVo = $s;
-        $mD = $s;
         $lG = 10;
         $lVs = 10;
         $lVo = 10;
@@ -317,29 +286,19 @@ if (!function_exists('passwordgenerate')) {
             $query->execute(array($resellerid));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $mG = $row['maxgserver'];
-                $mVs = $row['maxvserver'];
                 $mVo = $row['maxvoserver'];
-                $mD = $row['maxdedis'];
             }
 
             $query = $sql->prepare("SELECT COUNT(g.`id`) AS `amount` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? AND g.`active`='Y' AND u.`active`='Y'");
             $query->execute(array($resellerid));
             $gsCount = (int) $query->fetchColumn();
 
-            $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`userid`=:resellerid OR v.`resellerid`=:resellerid) AND v.`active`='Y' AND u.`active`='Y'");
-            $query->execute(array(':resellerid' => $resellerid));
-            $vCount = (int) $query->fetchColumn();
-
             $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' AND u.`active`='Y'");
             $query->execute(array($resellerid));
             $voCount = (int) $query->fetchColumn();
-
-            $query = $sql->prepare("SELECT COUNT(`dedicatedID`) AS `amount` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userid`=u.`id` WHERE (d.`userID`=:resellerid OR d.`resellerID`=:resellerid) AND d.`active`!='N'");
-            $query->execute(array(':resellerid' => $resellerid));
-            $dCount = (int) $query->fetchColumn();
         }
 
-        return array('left' => $left, 'count' => $count, 'gsCount' => $gsCount, 'vCount' => $vCount, 'voCount' => $voCount, 'dCount' => $dCount, 'mG' => $mG, 'mVs' => $mVs, 'mVo' => $mVo, 'mD' => $mD, 'lG' => $lG, 'lVs' => $lVs, 'lVo' => $lVo, 'lD' => $lD, 'p' => 'Y', 'b' => 'Y', 't' => 'g', 'u' => 'U', 'c' => 'B', 'v' => $rSA['version']);
+        return array('left' => $left, 'count' => $count, 'gsCount' => $gsCount, 'voCount' => $voCount, 'mG' => $mG, 'mVs' => $mVs, 'mVo' => $mVo, 'lG' => $lG, 'lVs' => $lVs, 'lVo' => $lVo, 'lD' => $lD, 'p' => 'Y', 'b' => 'Y', 't' => 'g', 'u' => 'U', 'c' => 'B', 'v' => $rSA['version']);
     }
 
     function getusername($userid) {
@@ -391,77 +350,58 @@ if (!function_exists('passwordgenerate')) {
     }
 
     function language($user_id) {
-
         global $sql, $ui;
-
-        if (!isset($_SESSION['language'])) {
-
-            $query = $sql->prepare("SELECT `language` FROM `userdata` WHERE `id`=? LIMIT 1");
-            $query->execute(array($user_id));
-            $language = $query->fetchColumn();
-
-            if ($language == '') {
-                $lang_detect = (isset($ui->server['HTTP_ACCEPT_LANGUAGE'])) ? small_letters_check(substr($ui->server['HTTP_ACCEPT_LANGUAGE'], 0, 2), 2) : 'uk';
-
-                if (is_dir(EASYWIDIR . '/languages/' . $lang_detect)) {
-                    $language = $lang_detect;
-
-                } else {
-                    $query = $sql->prepare("SELECT `language` FROM `settings` LIMIT 1");
-                    $query->execute();
-                    $language = $query->fetchColumn();
-                }
-
-            } else if (!is_dir(EASYWIDIR . '/languages/' . $language)) {
-                $query = $sql->prepare("SELECT `language` FROM `settings` LIMIT 1");
-                $query->execute();
-                $language = $query->fetchColumn();
-            }
-
-            $query = $sql->prepare("UPDATE `userdata` SET `language`=? WHERE `id`=? LIMIT 1");
-            $query->execute(array($language, $user_id));
-            $_SESSION['language'] = $language;
-
-        } else {
-            $language = $_SESSION['language'];
+    
+        if (isset($_SESSION['language'])) {
+            return $_SESSION['language'];
         }
-
+    
+        $query = $sql->prepare("SELECT `language` FROM `userdata` WHERE `id`=? LIMIT 1");
+        $query->execute([$user_id]);
+        $language = $query->fetchColumn();
+    
+        if (!$language || !is_dir(EASYWIDIR . '/languages/' . $language)) {
+            $lang_detect = isset($ui->server['HTTP_ACCEPT_LANGUAGE']) ? small_letters_check(substr($ui->server['HTTP_ACCEPT_LANGUAGE'], 0, 2), 2) : 'uk';
+            $language = is_dir(EASYWIDIR . '/languages/' . $lang_detect) ? $lang_detect : 'en';
+        }
+    
+        $query = $sql->prepare("UPDATE `userdata` SET `language`=? WHERE `id`=? LIMIT 1");
+        $query->execute([$language, $user_id]);
+        $_SESSION['language'] = $language;
+    
         return $language;
     }
+    
 
     function getlanguagefile($filename, $user_language, $reseller_id) {
 
         global $sql;
-
-        $sprache = new stdClass;
+    
         $query = $sql->prepare("SELECT `language`,`template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-            $default_language = $row['language'];
-            $template = $row['template'];
-
-            if (file_exists(EASYWIDIR . '/languages/' . $template. '/' . $user_language. '/' . $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/' . $template. '/' . $user_language. '/' . $filename.'.xml');
-
-            } else if (file_exists(EASYWIDIR . '/languages/' . $template. '/' . $default_language. '/' . $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/' . $template. '/' . $default_language. '/' . $filename.'.xml');
-
-            } else if (file_exists(EASYWIDIR . '/languages/default/'.$user_language. '/' . $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$user_language. '/' . $filename.'.xml');
-
-            } else if (file_exists(EASYWIDIR . '/languages/default/'.$default_language. '/' . $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$default_language. '/' . $filename.'.xml');
-
-            } else if (file_exists(EASYWIDIR . '/languages/' . $user_language. '/' . $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/' . $user_language. '/' . $filename.'.xml');
-
-            } else if (file_exists(EASYWIDIR . '/languages/' . $default_language. '/' . $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/' . $default_language. '/' . $filename.'.xml');
+    
+        $row = $query->fetch(PDO::FETCH_ASSOC);
+        $default_language = $row['language'];
+        $template = $row['template'];
+    
+        $paths_to_check = [
+            EASYWIDIR . '/languages/' . $template . '/' . $user_language . '/' . $filename . '.xml',
+            EASYWIDIR . '/languages/' . $template . '/' . $default_language . '/' . $filename . '.xml',
+            EASYWIDIR . '/languages/default/' . $user_language . '/' . $filename . '.xml',
+            EASYWIDIR . '/languages/default/' . $default_language . '/' . $filename . '.xml',
+            EASYWIDIR . '/languages/' . $user_language . '/' . $filename . '.xml',
+            EASYWIDIR . '/languages/' . $default_language . '/' . $filename . '.xml'
+        ];
+    
+        foreach ($paths_to_check as $path) {
+            if (file_exists($path)) {
+                return simplexml_load_file($path);
             }
         }
-        return $sprache;
+    
+        return new stdClass;
     }
+    
 
     function ipstoarray($value) {
 
@@ -492,122 +432,6 @@ if (!function_exists('passwordgenerate')) {
         natsort($ips_array);
 
         return $ips_array;
-    }
-
-    function freeips($value) {
-
-        global $sql;
-
-        $userips = array();
-
-        if ($value == 0) {
-
-            $query = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `resellerID`=0");
-            $query->execute();
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                $userips[] = $row['ip'];
-            }
-
-            $query = $sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer`");
-            $query->execute();
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-                $key = array_search($row['ip'], $userips);
-                if (false !== $key) {
-                    unset($userips[$key]);
-                }
-
-                foreach (ipstoarray($row['ips']) as $usedip) {
-                    $key = array_search($usedip, $userips);
-                    if (false !== $key) {
-                        unset($userips[$key]);
-                    }
-                }
-            }
-
-            $query = $sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated`");
-            $query->execute();
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-                $key = array_search($row['ip'], $userips);
-                if (false !== $key) {
-                    unset($userips[$key]);
-                }
-
-                foreach (ipstoarray($row['ips']) as $usedip) {
-                    $key = array_search($usedip, $userips);
-                    if (false !== $key) {
-                        unset($userips[$key]);
-                    }
-                }
-            }
-
-        } else {
-
-            $query = $sql->prepare("SELECT `resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
-            $query->execute(array($value));
-            $resellerid = $query->fetchColumn();
-
-
-            $query = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `resellerID`=?");
-            $query->execute(array($resellerid));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                $userips[] = $row['ip'];
-            }
-
-            $query = $sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer` WHERE `resellerid`=?");
-            $query->execute(array($resellerid));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-                $key = array_search($row['ip'], $userips);
-                if (false !== $key) {
-                    unset($userips[$key]);
-                }
-
-                foreach (ipstoarray($row['ips']) as $usedip) {
-                    $key = array_search($usedip, $userips);
-                    if (false !== $key) {
-                        unset($userips[$key]);
-                    }
-                }
-            }
-
-            $query = $sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated` WHERE `resellerid`=?");
-            $query->execute(array($resellerid));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-                $key = array_search($row['ip'], $userips);
-                if (false !== $key) {
-                    unset($userips[$key]);
-                }
-
-                foreach (ipstoarray($row['ips']) as $usedip) {
-                    $key = array_search($usedip, $userips);
-                    if (false !== $key) {
-                        unset($userips[$key]);
-                    }
-                }
-            }
-
-            $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE accounttype='r' AND `resellerid`=:id AND `id`!=:id");
-            $query2 = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `resellerID`=? AND `ownerID`!=`resellerID`");
-            $query->execute(array(':id' => $resellerid));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-                $query2->execute(array($row['id']));
-                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-                    $key = array_search($row2['ip'], $userips);
-                    if (false !== $key) {
-                        unset($userips[$key]);
-                    }
-                }
-            }
-        }
-
-        $userips = array_unique($userips);
-        natsort($userips);
-
-        return $userips;
     }
 
     function webhostdomain($resellerid) {
@@ -963,28 +787,18 @@ if (!function_exists('passwordgenerate')) {
     function User_Permissions($id) {
 
         global $sql;
-
-        $pa = array('defaultgroup' => false, 'active' => false, 'root' => false, 'miniroot' => false, 'settings' => false, 'log' => false, 'ipBans' => false, 'updateEW' => false, 'feeds' => false, 'jobs' => false, 'apiSettings' => false, 'cms_settings' => false, 'cms_pages' => false, 'cms_news' => false, 'cms_comments' => false, 'mysql_settings' => false, 'mysql' => false, 'user' => false, 'user_users' => false, 'userGroups' => false, 'userPassword' => false, 'roots' => false, 'masterServer' => false, 'gserver' => false, 'eac' => false, 'gimages' => false, 'addons' => false, 'restart' => false, 'gsResetting' => false, 'modfastdl' => false, 'fastdl' => false, 'useraddons' => false, 'usersettings' => false, 'ftpaccess' => false, 'tickets' => false, 'usertickets' => false, 'addvserver' => false, 'modvserver' => false, 'delvserver' => false, 'usevserver' => false, 'vserversettings' => false, 'dhcpServer' => false, 'pxeServer' => false, 'dedicatedServer' => false, 'resellertemplates' => false, 'vserverhost' => false, 'lendserver' => false, 'lendserverSettings' => false, 'voicemasterserver' => false, 'voiceserver' => false, 'voiceserverStats' => false, 'voiceserverSettings' => false, 'ftpbackup' => false, 'traffic' => false, 'trafficsettings' => false);
-
-        $query = $sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
-        $query->execute(array($id));
-        $accounttype = $query->fetchColumn();
-
-        $query = $sql->prepare("SELECT g.* FROM `userdata_groups` a INNER JOIN `usergroups` g ON g.`id`=a.`groupID` WHERE a.`userID`=?");
+    
+        $pa = array('defaultgroup' => false, 'active' => false, 'root' => false, 'miniroot' => false, 'settings' => false, 'log' => false, 'ipBans' => false, 'updateEW' => false, 'feeds' => false, 'jobs' => false, 'apiSettings' => false, 'cms_settings' => false, 'cms_pages' => false, 'cms_news' => false, 'cms_comments' => false, 'mysql_settings' => false, 'mysql' => false, 'user' => false, 'user_users' => false, 'userGroups' => false, 'userPassword' => false, 'roots' => false, 'masterServer' => false, 'gserver' => false, 'eac' => false, 'gimages' => false, 'addons' => false, 'restart' => false, 'gsResetting' => false, 'modfastdl' => false, 'fastdl' => false, 'useraddons' => false, 'usersettings' => false, 'ftpaccess' => false, 'tickets' => false, 'usertickets' => false, 'addvserver' => false, 'modvserver' => false, 'delvserver' => false, 'usevserver' => false, 'vserversettings' => false, 'dhcpServer' => false, 'pxeServer' => false, 'resellertemplates' => false, 'vserverhost' => false, 'lendserver' => false, 'lendserverSettings' => false, 'voicemasterserver' => false, 'voiceserver' => false, 'voiceserverStats' => false, 'voiceserverSettings' => false, 'ftpbackup' => false, 'traffic' => false, 'trafficsettings' => false);
+    
+        $query = $sql->prepare("SELECT `accounttype`, g.* FROM `userdata_groups` a INNER JOIN `usergroups` g ON g.`id`=a.`groupID` INNER JOIN `userdata` u ON u.`id`=a.`userID` WHERE u.`id`=?");
         $query->execute(array($id));
         $array = $query->fetchAll(PDO::FETCH_ASSOC);
+    
         foreach ($array as $row) {
-
-            if (($accounttype == 'u' and $row['miniroot'] == 'Y')) {
+            if (($row['accounttype'] == 'u' and $row['miniroot'] == 'Y') or ($row['accounttype'] != 'u' and $row['root'] == 'Y')) {
                 foreach ($row as $key => $value) {
                     $pa[$key] = true;
                 }
-
-            } else if (($accounttype != 'u' and $row['root'] == 'Y')) {
-                foreach ($row as $key => $value) {
-                    $pa[$key] = true;
-                }
-
             } else {
                 foreach ($row as $key => $value) {
                     if ((isset($pa[$key]) and $pa[$key] === false) or !isset($pa[$key])) {
@@ -993,30 +807,39 @@ if (!function_exists('passwordgenerate')) {
                 }
             }
         }
+    
         return $pa;
     }
 
     function array_value_exists($key, $value, $array) {
-        return (array_key_exists($key, $array) and $array[$key] == $value)  ? true : false;
+        return isset($array[$key]) && $array[$key] === $value;
     }
 
     function updateJobs($localID, $resellerID, $jobPending = 'Y') {
-
         global $sql;
-
-        $update = $sql->prepare("UPDATE `gsswitch` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
+    
+        $update = $sql->prepare("
+            UPDATE `gsswitch` SET `jobPending`=?
+            WHERE `userid`=? AND `resellerid`=?
+        ");
         $update->execute(array($jobPending, $localID, $resellerID));
-
-        $update = $sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`=? WHERE `uid`=? AND `resellerid`=?");
+    
+        $update = $sql->prepare("
+            UPDATE `mysql_external_dbs` SET `jobPending`=?
+            WHERE `uid`=? AND `resellerid`=?
+        ");
         $update->execute(array($jobPending, $localID, $resellerID));
-
-        $update = $sql->prepare("UPDATE `virtualcontainer` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
+    
+        $update = $sql->prepare("
+            UPDATE `voice_server` SET `jobPending`=?
+            WHERE `userid`=? AND `resellerid`=?
+        ");
         $update->execute(array($jobPending, $localID, $resellerID));
-
-        $update = $sql->prepare("UPDATE `voice_server` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
-        $update->execute(array($jobPending, $localID, $resellerID));
-
-        $update = $sql->prepare("UPDATE `voice_dns` SET `jobPending`=? WHERE `userID`=? AND `resellerID`=?");
+    
+        $update = $sql->prepare("
+            UPDATE `voice_dns` SET `jobPending`=?
+            WHERE `userID`=? AND `resellerID`=?
+        ");
         $update->execute(array($jobPending, $localID, $resellerID));
     }
 
@@ -1075,8 +898,11 @@ if (!function_exists('passwordgenerate')) {
         }
     }
 
-    function dataExist ($value, $array) {
-        return (isset($array[$value]) and isset($array[$array[$value]]) and !in_array($array[$array[$value]], array(false, null,''))) ? true : false;
+    function dataExist($value, $array) {
+        if(isset($array[$value]) && isset($array[$array[$value]]) && $array[$array[$value]]) {
+            return true;
+        }
+        return false;
     }
 
     function webhostRequest ($domain, $useragent, $file, $postParams = '', $port = 80) {
@@ -1237,14 +1063,9 @@ if (!function_exists('passwordgenerate')) {
         return $xml->asXML();
     }
 
-    function yesNo ($check) {
-
+    function yesNo($check) {
         global $ui;
-
-        if ($ui->active($check, 'post') == 'Y') {
-            return 'Y';
-        }
-        return 'N';
+        return $ui->active($check, 'post') == 'Y' ? 'Y' : 'N';
     }
 
     function returnPlainArray ($arr, $key) {

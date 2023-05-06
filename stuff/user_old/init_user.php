@@ -80,8 +80,6 @@ if (isset($_SESSION['sID'])) {
     $voicecount = count($substituteAccess['vo']);
     $tsdnscount = count($substituteAccess['vd']);
     $dbcount = count($substituteAccess['db']);
-    $rootcount = count($substituteAccess['ro']);
-    $virtualcount = count($substituteAccess['vs']);
 
 } else {
 
@@ -115,14 +113,6 @@ if (isset($_SESSION['sID'])) {
     $query = $sql->prepare("SELECT COUNT(d.`dnsID`) AS `amount` FROM `voice_dns` d INNER JOIN `voice_tsdns` s ON d.`tsdnsID`=s.`id` WHERE d.`active`='Y' AND s.`active`='Y' AND d.`userID`=? LIMIT 1");
     $query->execute(array($user_id));
     $tsdnscount = $query->fetchColumn();
-
-    $query = $sql->prepare("SELECT COUNT(`dedicatedID`) AS `amount` FROM `rootsDedicated` WHERE `active`='Y' AND `userID`=? LIMIT 1");
-    $query->execute(array($user_id));
-    $rootcount = $query->fetchColumn();
-
-    $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `virtualcontainer` WHERE `active`='Y' AND `userid`=? LIMIT 1");
-    $query->execute(array($user_id));
-    $virtualcount = $query->fetchColumn();
     
     if (!isset($reseller_id)) {
         $reseller_id = 0;
@@ -209,14 +199,6 @@ if ($voicecount > 0 and $easywiModules['vo'] === true) {
 
 if ($tsdnscount > 0 and $easywiModules['vo'] === true) {
     $what_to_be_included_array['vd'] = 'userpanel_voice_dns.php';
-}
-
-if ($rootcount > 0 and $easywiModules['ro'] === true) {
-    $what_to_be_included_array['de'] = 'userpanel_dedicated.php';
-}
-
-if ($virtualcount > 0 and $easywiModules['ro'] === true) {
-    $what_to_be_included_array['vm'] = 'userpanel_virtual.php';
 }
 
 if ($dbcount > 0 and $easywiModules['my'] === true) {
