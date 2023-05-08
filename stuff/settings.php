@@ -64,6 +64,7 @@ $dbConnect = [
     'charset' => 'utf8',
     'debug' => $debug,
 ];
+$dbConnect['connect']="${dbConnect['type']}:host=${dbConnect['host']};dbname=${dbConnect['db']};charset=${dbConnect['charset']}";
 
 if (isset($demo) and $demo == 1) {
     $ui->demoMode();
@@ -78,16 +79,8 @@ if (isset($debug) and $debug == 1) {
 } else {
     $dbConnect['debug'] = 0;
 }
-
 try {
-    $dsn = "{$dbConnect['type']}:host={$dbConnect['host']};dbname={$dbConnect['db']};charset={$dbConnect['charset']}";
-    $options = [
-        PDO::ATTR_ERRMODE => ($debug) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-    ];
-
-    $pdo = new PDO($dsn, $dbConnect['user'], $dbConnect['pwd'], $options);
+    $sql = new \PDO($dbConnect['connect'], $dbConnect['user'], $dbConnect['pwd']);
 
     if ($dbConnect['debug'] == 1) {
         $sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
