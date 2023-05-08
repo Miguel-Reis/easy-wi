@@ -55,12 +55,15 @@ include(EASYWIDIR . '/stuff/config.php');
 $ewCfg['captcha'] = $captcha;
 $ewCfg['title'] = $title;
 
-$dbConnect['type'] = "mysql";
-$dbConnect['host'] = $host;
-$dbConnect['user'] = $user;
-$dbConnect['pwd'] = $pwd;
-$dbConnect['db'] = $db;
-$dbConnect['charset'] = "utf8";
+$dbConnect = [
+    'type' => 'mysql',
+    'host' => $host,
+    'user' => $user,
+    'pwd' => $pwd,
+    'db' => $db,
+    'charset' => 'utf8',
+    'debug' => $debug,
+];
 
 if (isset($demo) and $demo == 1) {
     $ui->demoMode();
@@ -75,9 +78,16 @@ if (isset($debug) and $debug == 1) {
 } else {
     $dbConnect['debug'] = 0;
 }
+
 try {
-    $dbConnect['connect']="${dbConnect['type']}:host=${dbConnect['host']};dbname=${dbConnect['db']};charset=${dbConnect['charset']}";
-    $sql = new \PDO($dbConnect['connect'], $dbConnect['user'], $dbConnect['pwd']);
+    $dsn = "{$dbConnect['type']}:host={$dbConnect['host']};dbname={$dbConnect['db']};charset={$dbConnect['charset']}";
+    $options = [
+        PDO::ATTR_ERRMODE => ($debug) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ];
+
+    $pdo = new PDO($dsn, $dbConnect['user'], $dbConnect['pwd'], $options);
 
     if ($dbConnect['debug'] == 1) {
         $sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
