@@ -148,19 +148,16 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $statusList[$shorten] = false;
         }
     }
-    
-
-
-    }
 
     // Add Server space data - Nexus633
     // Fix Json_decode error
-    $space = $rootServer->getDiskSpace("/home") ?? $rootServer->getDiskSpace("/") ?? new stdClass(['mount' => 'unknown']);
+    $space = $rootServer->getDiskSpace("/home") ?: $rootServer->getDiskSpace("/") ?: (object) ["mount" => "unknown"];
 
-    if ($space->mount == "unknown") {
+    if ($space->mount === "unknown") {
         $spacedata = '<a href="javascript:void(0);"><span class="btn btn-danger btn-sm">unknown</span></a>';
     } else {
-        $perc = substr($space->perc, 0, -1);
+        $perc = (int) substr($space->perc, 0, -1);
+
         switch (true) {
             case ($perc <= 50):
                 $btn_class = "btn-success";
@@ -171,10 +168,14 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             default:
                 $btn_class = "btn-danger";
         }
-        $link = '<a href="javascript:void(0);">';
-        $spacedata = $link . '<span class="btn ' . $btn_class . ' btn-sm">%s</span></a>';
-        $spacedata .= ' ' . $link . '<span class="btn ' . $btn_class . ' btn-sm">%s</span></a>';
-        $spacedata = sprintf($spacedata, $gsprache->status_space_used . ' ' . $space->perc . ' - ' . $space->mount, $gsprache->status_space_size . '' .$space->size . ' / ' . $gsprache->status_space_free . ' ' . $space->avil);
+
+        $spacedata = sprintf(
+            '<a href="javascript:void(0);"><span class="btn %s btn-sm">%s - %s / %s</span></a>',
+            $btn_class,
+            "{$gsprache->status_space_used} {$space->perc} - {$space->mount}",
+            "{$gsprache->status_space_size} {$space->size}",
+            "{$gsprache->status_space_free} {$space->avil}"
+        );
     }
     $array['aaData'][] = array(
         $row['ip'], 
@@ -184,3 +185,4 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'ma', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_add.tpl', 'ma', 'ad', $row['id'], $gsprache->add), 
         $spacedata
     );
+}
