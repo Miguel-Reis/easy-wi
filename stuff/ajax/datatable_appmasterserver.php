@@ -41,9 +41,9 @@ if (!defined('AJAXINCLUDED')) {
     die('Do not access directly!');
 }
 
-include(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
-include(EASYWIDIR . '/stuff/methods/class_masterserver.php');
+require_once(EASYWIDIR . '/stuff/keyphrasefile.php');
+require_once(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+require_once(EASYWIDIR . '/stuff/methods/class_masterserver.php');
 
 $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata` WHERE `resellerid`=?");
 $query->execute(array($resellerLockupID));
@@ -58,15 +58,14 @@ if ($sSearch) {
     $array['iTotalDisplayRecords'] = $array['iTotalRecords'];
 }
 
+
 $orderFields = array(0 => '`ip`', 1 => '`id`', 2 => '`description`');
 
-if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
-    $orderBy = implode(' ' . $sSortDir . ', ', $orderFields[$iSortCol]) . ' ' . $sSortDir;
-} else if (isset($orderFields[$iSortCol]) and !is_array($orderFields[$iSortCol])) {
-    $orderBy = $orderFields[$iSortCol] . ' ' . $sSortDir;
-} else {
-    $orderBy = '`id` ASC';
-}
+$orderBy = isset($orderFields[$iSortCol]) ?
+    (is_array($orderFields[$iSortCol]) ?
+        implode(' ' . $sSortDir . ', ', $orderFields[$iSortCol]) . ' ' . $sSortDir :
+        $orderFields[$iSortCol] . ' ' . $sSortDir) :
+    '`id` ASC';
 
 $query2 = $sql->prepare("SELECT DISTINCT(s.`shorten`) AS `shorten`,r.`installing`,r.`updating`,r.`installstarted` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=?");
 $query3 = $sql->prepare("SELECT r.`id`,s.`steamgame`,s.`updates`,d.`updates` AS `rupdates` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`shorten`=? AND r.`resellerid`=? AND d.`ip`=? LIMIT 1");
@@ -95,104 +94,93 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $shorten = $row2['shorten'];
 
-        if ($row2['installing'] == 'N' and $row2['updating'] == 'N') {
+        if ($row2['installing'] == 'N' && $row2['updating'] == 'N') {
 
-            $statusList[$row2['shorten']] = true;
+            $statusList[$shorten] = true;
 
         } else {
 
-            $toolong = date($row2['installstarted'], strtotime("+15 minutes"));
+            $toolong = strtotime("+15 minutes", strtotime($row2['installstarted']));
 
-            if (strtotime($logdate) > strtotime($toolong)) {
+            if (strtotime($logdate) > $toolong) {
 
-                $sshcheck[] = $row2['shorten'];
+                $sshcheck[] = $shorten;
 
-                $rootServer->checkForUpdate($row2['shorten']);
+                $rootServer->checkForUpdate($shorten);
 
             } else {
-                $statusList[$row2['shorten']] = false;
+                $statusList[$shorten] = false;
             }
         }
     }
 
+
     if (count($sshcheck) > 0) {
-
         $checkReturn = $rootServer->getUpdateStatus();
-
         if ($checkReturn === false) {
-
             $description = 'The login data does not work';
-
         } else if (strlen($checkReturn) > 0) {
-
             $games = array();
-
             foreach (preg_split('/\;/', $checkReturn, -1, PREG_SPLIT_NO_EMPTY) as $status) {
-
                 $ex = explode('=', $status);
-
                 if (isset($ex[1])) {
                     $games[$ex[0]] = $ex[1];
                 }
             }
-
+    
+            $query3->execute(array_values($sshcheck), $resellerLockupID, $rootServer->sship);
+            $rows3 = $query3->fetchAll(PDO::FETCH_ASSOC);
+    
             foreach ($games as $shorten => $v) {
-
                 // Check if the shorten exists and the update is done
-                $query3->execute(array($shorten, $resellerLockupID, $rootServer->sship));
-                while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
-
-                    // If the update is no longer running, update db entry
-                    if ($v == 0) {
-
-                        $statusList[$shorten] = true;
-
-                        $query4->execute(array($row3['id']));
-
-                        unset($sshcheck[array_search($shorten, $sshcheck)]);
-                    }
+                $matchingRows = array_filter($rows3, function($row) use ($shorten) {
+                    return $row['shorten'] === $shorten;
+                });
+                if (!empty($matchingRows) && in_array($v, [0, '0'])) {
+                    $statusList[$shorten] = true;
+                    $query4->execute(array($matchingRows[0]['id']));
+                    unset($sshcheck[array_search($shorten, $sshcheck)]);
                 }
             }
         }
-
+    
         foreach ($sshcheck as $shorten) {
             $statusList[$shorten] = false;
         }
+    }
+    
 
 
     }
 
     // Add Server space data - Nexus633
     // Fix Json_decode error
-    $space = null;
-    $homespace = $rootServer->getDiskSpace("/home");
-    if($homespace){
-        $space = $homespace;
-    }else{
-        $rootspace = $rootServer->getDiskSpace("/");
-        if($rootspace){
-            $space = $rootspace;
-        }else{
-            $space = new stdClass();
-            $space->mount = "unknown";
-        }
-    }
+    $space = $rootServer->getDiskSpace("/home") ?? $rootServer->getDiskSpace("/") ?? new stdClass(['mount' => 'unknown']);
 
-    if($space->mount == "unknown"){
+    if ($space->mount == "unknown") {
         $spacedata = '<a href="javascript:void(0);"><span class="btn btn-danger btn-sm">unknown</span></a>';
-
-    }else{
+    } else {
         $perc = substr($space->perc, 0, -1);
-        if($perc <= 50){
-            $btn = "btn-success";
-        }else if($perc > 50 && $perc <= 80){
-            $btn = "btn-warning";
-        }else{
-            $btn = "btn-danger";
+        switch (true) {
+            case ($perc <= 50):
+                $btn_class = "btn-success";
+                break;
+            case ($perc <= 80):
+                $btn_class = "btn-warning";
+                break;
+            default:
+                $btn_class = "btn-danger";
         }
-        $spacedata = '<a href="javascript:void(0);"><span class="btn ' . $btn . ' btn-sm"> ' . $gsprache->status_space_used . ' ' . $space->perc . ' - ' . $space->mount . '</span></a>';
-        $spacedata .= ' <a href="javascript:void(0);"><span class="btn ' . $btn . ' btn-sm">' . $gsprache->status_space_size . '' .$space->size . ' / ' . $gsprache->status_space_free . ' ' . $space->avil . '</span></a>';
+        $link = '<a href="javascript:void(0);">';
+        $spacedata = $link . '<span class="btn ' . $btn_class . ' btn-sm">%s</span></a>';
+        $spacedata .= ' ' . $link . '<span class="btn ' . $btn_class . ' btn-sm">%s</span></a>';
+        $spacedata = sprintf($spacedata, $gsprache->status_space_used . ' ' . $space->perc . ' - ' . $space->mount, $gsprache->status_space_size . '' .$space->size . ' / ' . $gsprache->status_space_free . ' ' . $space->avil);
     }
-
-    $array['aaData'][] = array($row['ip'], $row['id'], $description, returnButton($template_to_use, 'ajax_admin_master_list.tpl', $statusList, '', '', ''), returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'ma', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_add.tpl', 'ma', 'ad', $row['id'], $gsprache->add), $spacedata);
-}
+    $array['aaData'][] = array(
+        $row['ip'], 
+        $row['id'], 
+        $description, 
+        returnButton($template_to_use, 'ajax_admin_master_list.tpl', $statusList, '', '', ''), 
+        returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'ma', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_add.tpl', 'ma', 'ad', $row['id'], $gsprache->add), 
+        $spacedata
+    );

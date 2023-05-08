@@ -752,28 +752,24 @@ if (!function_exists('passwordgenerate')) {
 
 
     function IncludeTemplate($use, $file, $location = 'admin') {
-
-        if (is_file(EASYWIDIR . '/template/' . $use. '/' . $location. '/' . $file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
-            return EASYWIDIR . '/template/' . $use. '/' . $location. '/' . $file;
-
-        } else if (is_file(EASYWIDIR . '/template/' . $use. '/' . $file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
-            return EASYWIDIR . '/template/' . $use. '/' . $file;
-
-        } else if (is_file(EASYWIDIR . '/template/default/' . $location. '/' . $file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
-            return EASYWIDIR . '/template/default/' . $location. '/' . $file;
-
-        } else if (is_file(EASYWIDIR . '/template/default/'.$file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
-            return EASYWIDIR . '/template/default/' . $file;
-
-        } else if (is_file(EASYWIDIR . '/template/default/custom_modules'.$file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
-            return EASYWIDIR . '/template/default/custom_modules'.$file;
-
-        } else if (preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
-            return EASYWIDIR . '/template/' . $file;
-
+        $paths = [
+            EASYWIDIR . "/template/{$use}/{$location}/{$file}",
+            EASYWIDIR . "/template/{$use}/{$file}",
+            EASYWIDIR . "/template/default/{$location}/{$file}",
+            EASYWIDIR . "/template/default/{$file}",
+            EASYWIDIR . "/template/default/custom_modules{$file}",
+            EASYWIDIR . "/template/{$file}",
+        ];
+    
+        foreach ($paths as $path) {
+            if (is_file($path) && preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
+                return $path;
+            }
         }
+    
         return false;
     }
+    
 
     function returnButton ($templateToUse, $template, $what, $do, $id, $description = '') {
 
@@ -788,7 +784,7 @@ if (!function_exists('passwordgenerate')) {
 
         global $sql;
     
-        $pa = array('defaultgroup' => false, 'active' => false, 'root' => false, 'miniroot' => false, 'settings' => false, 'log' => false, 'ipBans' => false, 'updateEW' => false, 'feeds' => false, 'jobs' => false, 'apiSettings' => false, 'cms_settings' => false, 'cms_pages' => false, 'cms_news' => false, 'cms_comments' => false, 'mysql_settings' => false, 'mysql' => false, 'user' => false, 'user_users' => false, 'userGroups' => false, 'userPassword' => false, 'roots' => false, 'masterServer' => false, 'gserver' => false, 'eac' => false, 'gimages' => false, 'addons' => false, 'restart' => false, 'gsResetting' => false, 'modfastdl' => false, 'fastdl' => false, 'useraddons' => false, 'usersettings' => false, 'ftpaccess' => false, 'tickets' => false, 'usertickets' => false, 'addvserver' => false, 'modvserver' => false, 'delvserver' => false, 'usevserver' => false, 'vserversettings' => false, 'dhcpServer' => false, 'pxeServer' => false, 'resellertemplates' => false, 'vserverhost' => false, 'lendserver' => false, 'lendserverSettings' => false, 'voicemasterserver' => false, 'voiceserver' => false, 'voiceserverStats' => false, 'voiceserverSettings' => false, 'ftpbackup' => false, 'traffic' => false, 'trafficsettings' => false);
+        $pa = array('defaultgroup' => false, 'active' => false, 'root' => false, 'miniroot' => false, 'settings' => false, 'log' => false, 'ipBans' => false, 'updateEW' => false, 'feeds' => false, 'jobs' => false, 'apiSettings' => false, 'cms_settings' => false, 'cms_pages' => false, 'cms_news' => false, 'cms_comments' => false, 'mysql_settings' => false, 'mysql' => false, 'user' => false, 'user_users' => false, 'userGroups' => false, 'userPassword' => false, 'roots' => false, 'masterServer' => false, 'gserver' => false, 'eac' => false, 'gimages' => false, 'addons' => false, 'restart' => false, 'gsResetting' => false, 'modfastdl' => false, 'fastdl' => false, 'useraddons' => false, 'usersettings' => false, 'ftpaccess' => false, 'tickets' => false, 'usertickets' => false, 'addvserver' => false, 'modvserver' => false, 'delvserver' => false, 'usevserver' => false, 'vserversettings' => false, 'resellertemplates' => false, 'vserverhost' => false, 'lendserver' => false, 'lendserverSettings' => false, 'voicemasterserver' => false, 'voiceserver' => false, 'voiceserverStats' => false, 'voiceserverSettings' => false, 'ftpbackup' => false);
     
         $query = $sql->prepare("SELECT `accounttype`, g.* FROM `userdata_groups` a INNER JOIN `usergroups` g ON g.`id`=a.`groupID` INNER JOIN `userdata` u ON u.`id`=a.`userID` WHERE u.`id`=?");
         $query->execute(array($id));
@@ -1437,9 +1433,9 @@ if (!function_exists('passwordgenerate')) {
             $ajaxSource = '"bServerSide" : true,"sAjaxSource": "' . $ajaxSource. '",';
         }
 
-        $htmlExtraInformation['css'][] = '<link href="css/default/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
-        $htmlExtraInformation['js'][] = '<script src="js/default/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
-        $htmlExtraInformation['js'][] = '<script src="js/default/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
+        $htmlExtraInformation['css'][] = '<link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css">';
+        $htmlExtraInformation['js'][] = '<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js" type="text/javascript"></script>';
+        $htmlExtraInformation['js'][] = '<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap.min.js" type="text/javascript"></script>';
         $htmlExtraInformation['js'][] = "<script type='text/javascript'>
 $(function() {
     $('#dataTable').dataTable({

@@ -57,8 +57,8 @@ require_once(EASYWIDIR . '/stuff/methods/functions_ts3.php');
 require_once(EASYWIDIR . '/stuff/methods/vorlage.php');
 require_once(EASYWIDIR . '/stuff/settings.php');
 
-if (!isset($admin_id) || !isset($user_id)) {
-    redirect('login.php');
+if (!isset($admin_id) && !isset($user_id)) {
+    //redirect('login.php');
 } else if (isset($admin_id)) {
     $pa = User_Permissions($admin_id);
 } else if (isset($user_id)) {
@@ -118,7 +118,7 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         require_once(EASYWIDIR . '/stuff/ajax/datatable_feeds.php');
 
         // App (GS + Tools) masterserver
-    } else if ($ui->smallletters('d', 15, 'get') == 'appmasterserver' and $admin_and_reseller and isset($resellerLockupID) and $pa['masterServer']) {
+    } else if ($ui->smallletters('d', 15, 'get') == 'appmasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['masterServer']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_appmasterserver.php');
 
