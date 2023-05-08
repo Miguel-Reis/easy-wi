@@ -51,9 +51,9 @@ $page_include = 1;
 include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/functions.php');
+include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/methods/class_page_settings.php');
 include(EASYWIDIR . '/stuff/cms/init_page.php');
-include(EASYWIDIR . '/stuff/settings.php');
 
 
 if (isset($page_active) and $page_active == 'Y') {
@@ -76,4 +76,5 @@ if (isset($page_active) and $page_active == 'Y') {
 } else {
     redirect($page_data->pageurl . '/login.php');
 }
+
 $sql = null;

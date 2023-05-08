@@ -376,7 +376,7 @@ if (!function_exists('passwordgenerate')) {
     function getlanguagefile($filename, $user_language, $reseller_id) {
 
         global $sql;
-        
+
         $query = $sql->prepare("SELECT `language`,`template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
     
