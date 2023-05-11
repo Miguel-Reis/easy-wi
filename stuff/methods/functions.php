@@ -47,307 +47,289 @@ if (!defined('EASYWIDIR')) {
 
 if (!function_exists('passwordgenerate')) {
 
-    function passwordgenerate ($length) {
-        $zeichen = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        $anzahl = count($zeichen) - 1;
+    function passwordgenerate($length) {
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789';
+        $charCount = strlen($characters);
         $password = '';
-        for($i = 1; $i <= $length; $i++){
-            $wuerfeln = mt_rand(0, $anzahl);
-            $password .= $zeichen[$wuerfeln];
+    
+        for ($i = 0; $i < $length; $i++) {
+            $randomIndex = mt_rand(0, $charCount - 1);
+            $password .= $characters[$randomIndex];
         }
+    
         return $password;
     }
 
-    function passwordhash($username, $password, $salt=false){
+    function passwordhash($username, $password, $salt = false) {
+        $usernamePart = substr($username, 0, strlen($username) / 2 + 1);
+        $passwordPart = substr($password, 0, strlen($password) / 2 + 1);
 
-        $passworda = str_split($password, (strlen($password) / 2) + 1);
-        $usernamea = str_split($username, (strlen($username) / 2) + 1);
+        $usernameFallback = isset($usernamePart[1]) ? $usernamePart[1] : $usernamePart[0];
+        $passwordFallback = isset($passwordPart[1]) ? $passwordPart[1] : $passwordPart[0];
 
-        if (!isset($usernamea[1])) {
-            $usernamea[1] = $usernamea[0];
-        }
-
-        if (!isset($passworda[1])) {
-            $passworda[1] = $passworda[0];
-        }
-
-        return ($salt == false) ? hash('sha512', sha1($usernamea[0] . md5($passworda[0] . $usernamea[1]) . $passworda[1])): hash('sha512', sha1($usernamea[0] . md5($passworda[0] . $salt . $usernamea[1]) . $passworda[1]));
+        $hashInput = $usernamePart[0] . md5($passwordPart[0] . ($salt ? $salt : '') . $usernameFallback) . $passwordFallback;
+        return hash('sha512', sha1($hashInput));
     }
 
-    function createHash ($name, $pwd, $saltOne, $saltTwo = 'ZPZw$[pkJF!;SHdl', $iterate = 1000) {
-        $pwdSplit = str_split($pwd,(strlen($pwd) / 2) + 1);
-        $nameSplit = str_split($name, (strlen($name) / 2) + 1);
-        $hash = '';
-
-        if (!isset($nameSplit[1]) and strlen($nameSplit[0]) > 0) {
-            $nameSplit[1] = $nameSplit[0];
-        }
-
-        if (!isset($pwdSplit[1]) and strlen($pwdSplit[0]) > 0) {
-            $pwdSplit[1] = $pwdSplit[0];
-        }
-
-        if (isset($nameSplit[1]) and isset($pwdSplit[1])) {
-            for ($i = 0;$i<=$iterate;$i++) {
-                $hash = hash('sha512', $nameSplit[0] . $saltOne . $pwdSplit[0] . $hash . $nameSplit[1] . $saltTwo . $pwdSplit[1]);
+    function createHash($name, $pwd, $saltOne, $saltTwo = 'ZPZw$[pkJF!;SHdl', $iterate = 1000) {
+        $namePart = substr($name, 0, strlen($name) / 2 + 1);
+        $pwdPart = substr($pwd, 0, strlen($pwd) / 2 + 1);
+    
+        $nameFallback = isset($namePart[1]) ? $namePart[1] : $namePart[0];
+        $pwdFallback = isset($pwdPart[1]) ? $pwdPart[1] : $pwdPart[0];
+    
+        if (isset($namePart[1]) && isset($pwdPart[1])) {
+            $hash = '';
+            for ($i = 0; $i <= $iterate; $i++) {
+                $hash = hash('sha512', $namePart[0] . $saltOne . $pwdPart[0] . $hash . $nameFallback . $saltTwo . $pwdFallback);
             }
-
+    
             return $hash;
         }
-
+    
         return false;
     }
 
-    function passwordCheck ($password, $storedHash, $username = '', $salt = '') {
-
-        // Easy-WI uses the PHP hash API introduced with version 5.5. Fallbacks in place for older versions.
-
+    function passwordCheck($password, $storedHash, $username = '', $salt = '') {
         global $aeskey;
-
-        // First check if crypt works properly. With old PHP versions like Debian 6 with 5.3.3 we will run into an error
-        if (crypt('password', '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') == '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') {
-
-            // Return true in case the password is ok
+    
+        // Check if PHP supports the crypt function properly
+        if (defined('CRYPT_BLOWFISH') && CRYPT_BLOWFISH) {
             if (password_verify($password, $storedHash)) {
                 return true;
             }
-
-            // Password is correctly but stored in an old or insecure format. We need to hash it with a secure implementation.
-            // Insecure implementations like md5 or sha1 are imported from other systems with the cloud.php job.
-            if (preg_match('/^[a-z0-9]{32}+$/', $storedHash) and md5($password) == $storedHash) {
-                return password_hash($password, PASSWORD_DEFAULT);
-            } else if (preg_match('/^[a-z0-9]{40}+$/', $storedHash) and sha1($password) == $storedHash) {
-                return password_hash($password, PASSWORD_DEFAULT);
-            } else if (preg_match('/^[a-z0-9]{128}+$/', $storedHash) and createHash($username, $password, $salt, $aeskey) == $storedHash) {
-                return password_hash($password, PASSWORD_DEFAULT);
-            } else if (preg_match('/^[a-z0-9]{128}+$/', $storedHash) and passwordhash($username, $password) == $storedHash) {
+    
+            if (preg_match('/^[a-f0-9]{32}$/i', $storedHash) && md5($password) === $storedHash) {
                 return password_hash($password, PASSWORD_DEFAULT);
             }
-
-        // Fallback to sha512 since some Admins are either lazy or forced to stick to old PHP.
+    
+            if (preg_match('/^[a-f0-9]{40}$/i', $storedHash) && sha1($password) === $storedHash) {
+                return password_hash($password, PASSWORD_DEFAULT);
+            }
+    
+            if (preg_match('/^[a-f0-9]{128}$/i', $storedHash) && createHash($username, $password, $salt, $aeskey) === $storedHash) {
+                return password_hash($password, PASSWORD_DEFAULT);
+            }
+    
         } else {
-
             $newSalt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
-
-            if (createHash($username, $password, $salt, $aeskey) == $storedHash) {
+    
+            if (createHash($username, $password, $salt, $aeskey) === $storedHash) {
                 return true;
-            } else if (preg_match('/^[a-z0-9]{32}+$/', $storedHash) and md5($password) == $storedHash) {
+            }
+    
+            if (preg_match('/^[a-f0-9]{32}$/i', $storedHash) && md5($password) === $storedHash) {
                 return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
-            } else if (preg_match('/^[a-z0-9]{40}+$/', $storedHash) and sha1($password) == $storedHash) {
+            }
+    
+            if (preg_match('/^[a-f0-9]{40}$/i', $storedHash) && sha1($password) === $storedHash) {
                 return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
-            } else if (preg_match('/^[a-z0-9]{128}+$/', $storedHash) and passwordhash($username, $password) == $storedHash) {
+            }
+    
+            if (preg_match('/^[a-f0-9]{128}$/i', $storedHash) && passwordhash($username, $password) === $storedHash) {
                 return createHash($username, $password, $salt, $aeskey);
             }
         }
-
-        // Password Is Not Correct
+    
         return false;
     }
+    
 
-    function passwordCreate ($username, $password) {
-
+    function passwordCreate($username, $password) {
         global $aeskey;
-
-        // First check if crypt works properly. Old PHP versions like Debian 6 with 5.3.3 will run into an error
-        if (crypt('password', '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') == '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') {
+    
+        if (defined('CRYPT_BLOWFISH') && CRYPT_BLOWFISH) {
             return password_hash($password, PASSWORD_DEFAULT);
         } else {
             $newSalt = md5(mt_rand() . strtotime('now'));
             return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
         }
-    }
+    }    
 
-    function szrp ($value) {
-        $szrm = array('ä' => 'ae','ö' => 'oe','ü' => 'ue','Ä' => 'Ae','Ö' => 'Oe','Ü' => 'Ue','ß' => 'ss','á' => 'a','à' => 'a','Á' => 'A','À' => 'A','é' => 'e','è' => 'e','É' => 'E','È' => 'E','ó' => 'o','ò' => 'o','Ó' => 'O','Ò' => 'O','ú' => 'u','ù' => 'u','Ú' => 'U','Ù' => 'U');
-        return strtolower(preg_replace('/[^a-zA-Z0-9]{1}/', '-', strtr($value, $szrm)));
+    function szrp($value) {
+        $szrm = array(
+            'ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue', 'Ä' => 'Ae',
+            'Ö' => 'Oe', 'Ü' => 'Ue', 'ß' => 'ss', 'á' => 'a',
+            'à' => 'a', 'Á' => 'A', 'À' => 'A', 'é' => 'e',
+            'è' => 'e', 'É' => 'E', 'È' => 'E', 'ó' => 'o',
+            'ò' => 'o', 'Ó' => 'O', 'Ò' => 'O', 'ú' => 'u',
+            'ù' => 'u', 'Ú' => 'U', 'Ù' => 'U'
+        );
+    
+        $filteredValue = preg_replace('/[^a-zA-Z0-9]+/', '-', $value);
+        $lowercaseValue = strtolower($filteredValue);
+        return strtr($lowercaseValue, $szrm);
     }
+    
 
-    function removeDoubleSlashes ($value) {
-        return preg_replace('/([^:])(\/{2,})/', '$1/', $value);
+    function removeDoubleSlashes($value) {
+        return preg_replace('#([^:])//+#', '$1/', $value);
     }
-
+    
     function redirect($value, $sendHTTP301 = false) {
-
         $target = removeDoubleSlashes($value);
-
-        if (substr($target, -9) == 'login.php') {
-            if (session_status() === PHP_SESSION_ACTIVE) {
-                session_unset();
-                session_destroy();
-            }
+    
+        if (substr($target, -9) === 'login.php' && session_status() === PHP_SESSION_ACTIVE) {
+            session_unset();
+            session_destroy();
         }
-
-        header ('Location: ' . $target, true, ($sendHTTP301 == true) ? 301 : 302);
+    
+        header('Location: ' . $target, true, $sendHTTP301 ? 301 : 302);
         die('Please allow redirection or manually navigate to ' . $value);
     }
+    
 
-    function listDirs ($dir) {
-
+    function listDirs($dir) {
         $selectLanguages = array();
-
-        if (is_dir($dir)){
-            $dirs=scandir($dir);
-
+    
+        if (is_dir($dir)) {
+            $dirs = scandir($dir);
+    
             foreach ($dirs as $row) {
-                if (small_letters_check($row,2)) {
+                if (smallLettersCheck($row, 2)) {
                     $selectLanguages[] = $row;
                 }
             }
         }
-
+    
         return $selectLanguages;
     }
-
-    function getlanguages ($value) {
-
-        $selectLanguages=listDirs('languages/' . $value . '/');
-
-        if (count($selectLanguages)<1) {
-            $selectLanguages = listDirs('languages/default/');
+    
+    function getLanguages($value) {
+        $languages = listDirs('languages/' . $value . '/');
+    
+        if (empty($languages)) {
+            $languages = listDirs('languages/default/');
         }
-        if (count($selectLanguages)<1) {
-            $selectLanguages = listDirs('languages/');
+        if (empty($languages)) {
+            $languages = listDirs('languages/');
         }
-
-        return $selectLanguages;
+    
+        return $languages;
     }
+    
 
-    function cleanFsockOpenRequest ($string, $start, $stop) {
-
-        while(substr($string, 0,1) != $start and strlen($string) > 0) {
-            $string = substr($string,1);
+    function cleanFsockOpenRequest($string, $start, $stop) {
+        $length = strlen($string);
+    
+        $startPos = 0;
+        $stopPos = $length - 1;
+    
+        while ($startPos < $length && substr($string, $startPos, 1) !== $start) {
+            $startPos++;
         }
-
-        while(substr($string, -1) != $stop and strlen($string) > 0) {
-            $string = substr($string, 0, -1);
+    
+        while ($stopPos >= 0 && substr($string, $stopPos, 1) !== $stop) {
+            $stopPos--;
         }
-
-        return $string;
-    }
-
-    function serverdata($type, $serverID, $aeskey) {
-
-        global $sql;
-        $serverdata = array();
-
-        if ($type == 'root') {
-            $query = $sql->prepare("SELECT `os`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword`,`publickey`,`keyname`,`ftpport`,`notified`,`cores`,`hyperthreading`,`resellerid`,`install_paths` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
-
-        } else {
-            $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`cfgdir`,`notified`,`resellerid` FROM `eac` WHERE `resellerid`=:serverID LIMIT 1");
+    
+        if ($startPos > $stopPos) {
+            return '';
         }
-
-        $query->execute(array(':serverID' => $serverID, ':aeskey' => $aeskey));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-            $cores = '';
-            $hyperthreading = '';
-            $steamAccount = '';
-            $steamPassword = '';
-            $installPaths = '';
-
-            $os = (isset($row['os'])) ? $row['os'] : '';
-
-            $serverdata = array('os' => $os, 'ip' => $row['ip'], 'port' => $row['decryptedport'], 'user' => $row['decrypteduser'], 'pass' => $row['decryptedpass'], 'publickey' => $row['publickey'], 'keyname' => $row['keyname'], 'notified' => $row['notified'], 'resellerid' => $row['resellerid'], 'hyperthreading' => $hyperthreading,'cores' => $cores,'ftpport' => $ftpport,'steamAccount' => $steamAccount,'steamPassword' => $steamPassword, 'install_paths' => $installPaths);
-        }
-
-        return $serverdata;
-
+    
+        return substr($string, $startPos, $stopPos - $startPos + 1);
     }
 
     function serverAmount($resellerid) {
-
         global $sql, $user_language, $rSA;
-
-        $query = $sql->prepare("SELECT  COUNT(g.`id`) AS `amount` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` LEFT JOIN `userdata` r ON g.`resellerid`= r.`id` WHERE g.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
-        $query->execute();
-        $gsCount = (int) $query->fetchColumn();
-
-        $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
-        $query->execute();
-        $voCount = (int) $query->fetchColumn();
-
+    
+        $gsCountQuery = $sql->prepare("SELECT COUNT(g.`id`) AS `amount` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` LEFT JOIN `userdata` r ON g.`resellerid`= r.`id` WHERE g.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
+        $gsCountQuery->execute();
+        $gsCount = (int) $gsCountQuery->fetchColumn();
+    
+        $voCountQuery = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
+        $voCountQuery->execute();
+        $voCount = (int) $voCountQuery->fetchColumn();
+    
         $count = $gsCount + $voCount;
-
+    
         $sprache = getlanguagefile('licence', $user_language, $resellerid);
         $s = $sprache->unlimited;
         $mG = $s;
-        $mVs = $s;
         $mVo = $s;
         $lG = 10;
-        $lVs = 10;
         $lVo = 10;
         $lD = 10;
         $left = $s;
-
+    
         if ($resellerid != 0) {
-
-            $query = $sql->prepare("SELECT `maxgserver`,`maxvserver`,`maxvoserver`,`maxdedis` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
-            $query->execute(array($resellerid));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $resellerDataQuery = $sql->prepare("SELECT `maxgserver`, `maxvoserver`, `maxdedis` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
+            $resellerDataQuery->execute(array($resellerid));
+            while ($row = $resellerDataQuery->fetch(PDO::FETCH_ASSOC)) {
                 $mG = $row['maxgserver'];
                 $mVo = $row['maxvoserver'];
             }
-
-            $query = $sql->prepare("SELECT COUNT(g.`id`) AS `amount` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? AND g.`active`='Y' AND u.`active`='Y'");
-            $query->execute(array($resellerid));
-            $gsCount = (int) $query->fetchColumn();
-
-            $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' AND u.`active`='Y'");
-            $query->execute(array($resellerid));
-            $voCount = (int) $query->fetchColumn();
+    
+            $gsCountQuery = $sql->prepare("SELECT COUNT(g.`id`) AS `amount` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? AND g.`active`='Y' AND u.`active`='Y'");
+            $gsCountQuery->execute(array($resellerid));
+            $gsCount = (int) $gsCountQuery->fetchColumn();
+    
+            $voCountQuery = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' AND u.`active`='Y'");
+            $voCountQuery->execute(array($resellerid));
+            $voCount = (int) $voCountQuery->fetchColumn();
         }
 
-        return array('left' => $left, 'count' => $count, 'gsCount' => $gsCount, 'voCount' => $voCount, 'mG' => $mG, 'mVs' => $mVs, 'mVo' => $mVo, 'lG' => $lG, 'lVs' => $lVs, 'lVo' => $lVo, 'lD' => $lD, 'p' => 'Y', 'b' => 'Y', 't' => 'g', 'u' => 'U', 'c' => 'B', 'v' => $rSA['version']);
+        return array(
+            'left' => $left,
+            'count' => $count,
+            'gsCount' => $gsCount,
+            'voCount' => $voCount,
+            'mG' => $mG,
+            'mVo' => $mVo,
+            'lG' => $lG,
+            'lVo' => $lVo,
+            'lD' => $lD,
+            'p' => 'Y',
+            'b' => 'Y',
+            't' => 'g',
+            'u' => 'U',
+            'c' => 'B',
+            'v' => $rSA['version']
+        );
     }
 
     function getusername($userid) {
-
         global $sql;
-
         $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userid));
-        $cname = ($query->rowCount() == 0) ? 'User deleted' : $query->fetchColumn();
-
-        return $cname;
+        $cname = $query->fetchColumn();
+        return ($cname !== false) ? $cname : 'User deleted';
     }
 
     function rsellerpermisions($userid) {
-
         global $sql;
         $query = $sql->prepare("SELECT `userid` FROM `userpermissions` WHERE `userid`=? AND (`addvserver`='Y' OR `modvserver`='Y' OR `delvserver`='Y' OR `vserversettings`='Y' OR `vserverhost`='Y' OR `resellertemplates`='Y' OR `usevserver`='Y' OR `root`='Y' OR `traffic`='Y') LIMIT 1");
         $query->execute(array($userid));
         $colcount = $query->rowCount();
-
+    
         if ($colcount == 0) {
             $query = $sql->prepare("SELECT g.`id` FROM `userdata_groups` u LEFT JOIN `usergroups` g ON u.`groupID`=g.`id` WHERE u.`userID`=? AND (`addvserver`='Y' OR `modvserver`='Y' OR `delvserver`='Y' OR `vserversettings`='Y' OR `vserverhost`='Y' OR `resellertemplates`='Y' OR `usevserver`='Y' OR `root`='Y' OR `traffic`='Y') LIMIT 1");
             $query->execute(array($userid));
-            $colcount = $query->fetchAll(PDO::FETCH_ASSOC);
+            $colcount = $query->rowCount();
         }
-
+    
         return $colcount;
     }
-
+    
     function isanyadmin($userid) {
-
         global $sql;
-
-        $query = $sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
+    
+        $query = $sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? AND `accounttype` IN ('a', 'r') LIMIT 1");
         $query->execute(array($userid));
         $accountType = $query->fetchColumn();
-
-        return ($accountType == 'a' or $accountType == 'r') ?  true : false;
+    
+        return ($accountType == 'a' or $accountType == 'r');
     }
 
     function isanyuser($userid) {
-
         global $sql;
-
-        $query = $sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
+    
+        $query = $sql->prepare("SELECT COUNT(*) FROM `userdata` WHERE `id`=? AND `accounttype`='u'");
         $query->execute(array($userid));
-
-        return ($query->fetchColumn() == 'u') ? true : false;
+    
+        return ($query->fetchColumn() > 0);
     }
+    
 
     function language($user_id) {
         global $sql, $ui;
@@ -361,7 +343,7 @@ if (!function_exists('passwordgenerate')) {
         $language = $query->fetchColumn();
     
         if (!$language || !is_dir(EASYWIDIR . '/languages/' . $language)) {
-            $lang_detect = isset($ui->server['HTTP_ACCEPT_LANGUAGE']) ? small_letters_check(substr($ui->server['HTTP_ACCEPT_LANGUAGE'], 0, 2), 2) : 'uk';
+            $lang_detect = isset($ui->server['HTTP_ACCEPT_LANGUAGE']) ? substr($ui->server['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'uk';
             $language = is_dir(EASYWIDIR . '/languages/' . $lang_detect) ? $lang_detect : 'en';
         }
     
@@ -371,6 +353,7 @@ if (!function_exists('passwordgenerate')) {
     
         return $language;
     }
+    
     
 
     function getlanguagefile($filename, $user_language, $reseller_id) {
@@ -402,35 +385,30 @@ if (!function_exists('passwordgenerate')) {
         return new stdClass;
     }
     
-
     function ipstoarray($value) {
-
         $ips_array = array();
-
+    
         if (isips($value)) {
             foreach (explode("\r\n", $value) as $exip) {
-
                 if (isips($exip)) {
                     $exploded_ip = explode('.', $exip);
-
-                    if (isset($exploded_ip[3]) and is_numeric($exploded_ip[3])){
+                    if (isset($exploded_ip[3]) && is_numeric($exploded_ip[3])) {
                         $ips_array[] = $exip;
-
                     } else if (isset($exploded_ip[3])) {
                         $range = explode('/', $exploded_ip[3]);
-                        $i = $range[0];
-
-                        while (isset($range[1]) and $i <= $range[1]) {
+                        $start = $range[0];
+                        $end = isset($range[1]) ? $range[1] : $start;
+    
+                        for ($i = $start; $i <= $end; $i++) {
                             $ips_array[] = $exploded_ip[0] . '.' . $exploded_ip[1] . '.' . $exploded_ip[2] . '.' . $i;
-                            $i++;
                         }
                     }
                 }
             }
         }
-
+    
         natsort($ips_array);
-
+    
         return $ips_array;
     }
 
@@ -814,56 +792,48 @@ if (!function_exists('passwordgenerate')) {
     function updateJobs($localID, $resellerID, $jobPending = 'Y') {
         global $sql;
     
-        $update = $sql->prepare("
-            UPDATE `gsswitch` SET `jobPending`=?
-            WHERE `userid`=? AND `resellerid`=?
-        ");
-        $update->execute(array($jobPending, $localID, $resellerID));
+        $updateGsswitch = $sql->prepare("UPDATE `gsswitch` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
+        $updateGsswitch->execute(array($jobPending, $localID, $resellerID));
     
-        $update = $sql->prepare("
-            UPDATE `mysql_external_dbs` SET `jobPending`=?
-            WHERE `uid`=? AND `resellerid`=?
-        ");
-        $update->execute(array($jobPending, $localID, $resellerID));
+        $updateExternalDbs = $sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`=? WHERE `uid`=? AND `resellerid`=?");
+        $updateExternalDbs->execute(array($jobPending, $localID, $resellerID));
     
-        $update = $sql->prepare("
-            UPDATE `voice_server` SET `jobPending`=?
-            WHERE `userid`=? AND `resellerid`=?
-        ");
-        $update->execute(array($jobPending, $localID, $resellerID));
+        $updateVoiceServer = $sql->prepare("UPDATE `voice_server` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
+        $updateVoiceServer->execute(array($jobPending, $localID, $resellerID));
     
-        $update = $sql->prepare("
-            UPDATE `voice_dns` SET `jobPending`=?
-            WHERE `userID`=? AND `resellerID`=?
-        ");
-        $update->execute(array($jobPending, $localID, $resellerID));
+        $updateVoiceDns = $sql->prepare("UPDATE `voice_dns` SET `jobPending`=? WHERE `userID`=? AND `resellerID`=?");
+        $updateVoiceDns->execute(array($jobPending, $localID, $resellerID));
     }
+    
 
-    function updateStates($action, $type=null) {
-
+    function updateStates($action, $type = null) {
         global $sql;
-
-        $typeQuery = ($type != null) ? " AND `type`='${type}'" : '';
-
-        $query = $sql->prepare("SELECT `type`,`affectedID` FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `action`=? $typeQuery GROUP BY `type`,`affectedID`");
-        $query->execute(array($action));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-            $query2 = $sql->prepare("SELECT `jobID` FROM `jobs` WHERE `type`=? AND `affectedID`=? AND `action`=? $typeQuery ORDER BY `jobID` DESC LIMIT 1");
-            $query2->execute(array($row['type'], $row['affectedID'], $action));
-            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-
-                if ($type == null) {
-                    $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `type`=? AND `affectedID`=? AND `jobID`!=?");
-                    $update->execute(array($row['type'], $row['affectedID'], $row2['jobID']));
-
-                } else {
-                    $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `userID`=? AND `jobID`!=?");
-                    $update->execute(array($row['affectedID'], $row2['jobID']));
-                }
+    
+        $typeQuery = ($type != null) ? " AND `type`='$type'" : '';
+    
+        $selectQuery = $sql->prepare("SELECT `type`, `affectedID` FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `action`=? $typeQuery GROUP BY `type`, `affectedID`");
+        $selectQuery->execute(array($action));
+    
+        while ($row = $selectQuery->fetch(PDO::FETCH_ASSOC)) {
+            $type = $row['type'];
+            $affectedID = $row['affectedID'];
+    
+            $selectMaxJobID = $sql->prepare("SELECT MAX(`jobID`) AS `maxJobID` FROM `jobs` WHERE `type`=? AND `affectedID`=? AND `action`=? $typeQuery");
+            $selectMaxJobID->execute(array($type, $affectedID, $action));
+    
+            $maxJobIDRow = $selectMaxJobID->fetch(PDO::FETCH_ASSOC);
+            $maxJobID = $maxJobIDRow['maxJobID'];
+    
+            if ($type == null) {
+                $updateJobs = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `type`=? AND `affectedID`=? AND `jobID`!=?");
+                $updateJobs->execute(array($type, $affectedID, $maxJobID));
+            } else {
+                $updateJobs = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `userID`=? AND `jobID`!=?");
+                $updateJobs->execute(array($affectedID, $maxJobID));
             }
         }
     }
+    
 
     function CopyAdminTable ($tablename, $id, $reseller_id, $limit, $where='') {
 

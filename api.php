@@ -130,9 +130,7 @@ if (isset($resellerIDs) and count($resellerIDs) == 1 and isset($type)) {
     }
 
     $gsModule = (is_numeric($licenceDetails['mG']) and $licenceDetails['mG'] == 0) ? false : true;
-    $vModule = (is_numeric($licenceDetails['mVs']) and $licenceDetails['mVs'] == 0) ? false : true;
     $voModule = (is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo'] == 0) ? false : true;
-    $dModule = (is_numeric($licenceDetails['mD']) and $licenceDetails['mD'] == 0) ? false : true;
 
     if ($type == 'list') {
 

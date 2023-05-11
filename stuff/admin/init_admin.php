@@ -130,10 +130,6 @@ if (is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo'] == 0) {
     $easywiModules['vo'] = false;
 }
 
-if (is_numeric($licenceDetails['mVs']) and $licenceDetails['mVs'] == 0 and is_numeric($licenceDetails['mD']) and $licenceDetails['mD'] == 0) {
-    $easywiModules['ro'] = false;
-}
-
 if ($reseller_id == 0) {
     $what_to_be_included_array['mo'] = 'admin_modules.php';
     $what_to_be_included_array['up'] = 'admin_social_provider.php';
