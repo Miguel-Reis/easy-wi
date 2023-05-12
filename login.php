@@ -150,6 +150,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
             sendmail('emailpwrecovery', $userid, $htmllink, '');
         }
+    }
 
     } else if ($ui->password('password1', 255, 'post') && $ui->password('password2', 255, 'post') && $ui->w('token', 32, 'get')) {
         if ($ui->password('password1', 255, 'post') == $ui->password('password2', 255, 'post')) {
