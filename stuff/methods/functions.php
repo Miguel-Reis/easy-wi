@@ -900,18 +900,18 @@ if (!function_exists('passwordgenerate')) {
                     $i++;
                 }
 
-                $send = "POST /${file} HTTP/1.1\r\n";
+                $send = "POST /{$file} HTTP/1.1\r\n";
 
             } else {
 
                 if (strlen($file) == 0) {
                     $file = '/';
                 }
-                $send = "GET ${file} HTTP/1.1\r\n";
+                $send = "GET {$file} HTTP/1.1\r\n";
             }
 
-            $send .= "Host: ${domain}\r\n";
-            $send .= "User-Agent: ${useragent}\r\n";
+            $send .= "Host: {$domain}\r\n";
+            $send .= "User-Agent: {$useragent}\r\n";
             $send .= "Content-Type: application/x-www-form-urlencoded; charset=utf-8\r\n";
 
             if (isset($postData) and is_array($postParams) and count($postParams) > 0) {
@@ -1214,7 +1214,7 @@ if (!function_exists('passwordgenerate')) {
                     $query3->execute(array($row['customID'], $id));
                     $value = ($id == 0) ? '' : $query3->fetchColumn();
 
-                   $return[] = array('customID' => $row['customID'], 'menu' => $text, 'name' => $row['name'], 'length' => $row['length'], 'type' => $row['type'], 'input' => "<input id='inputCustom-${row['customID']}' type='${type}' name='${row['name']}' maxlength='${row['length']}' value='${value}' >", 'value' => $value);
+                   $return[] = array('customID' => $row['customID'], 'menu' => $text, 'name' => $row['name'], 'length' => $row['length'], 'type' => $row['type'], 'input' => "<input id='inputCustom-{$row['customID']}' type='{$type}' name='{$row['name']}' maxlength='{$row['length']}' value='{$value}' >", 'value' => $value);
                 }
 
             } else if ($action == 'save') {
@@ -1471,7 +1471,7 @@ $(function() {
      * @return string
      */
     function getLoginHeader($valueOfTitle){
-        return preg_replace('/(.+)[\s](.+)/i', '<b>${1}</b> $2', $valueOfTitle, -1, $count);
+        return preg_replace('/(.+)[\s](.+)/i', '<b>{$1}</b> $2', $valueOfTitle, -1, $count);
     }
 
     function parseHeaders($data)

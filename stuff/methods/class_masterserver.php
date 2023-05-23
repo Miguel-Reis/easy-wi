@@ -643,7 +643,7 @@ class masterServer {
 
         // While we keep on counting up, the mail is send only once to prevent spam
         if (($this->rootNotifiedCount + 1) == $rSA['down_checks']) {
-            $query = ($resellerLockupID == 0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${$resellerLockupID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
+            $query = ($resellerLockupID == 0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`={$resellerLockupID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
             $query->execute();
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if ($row['mail_serverdown'] == 'Y') {
@@ -772,14 +772,14 @@ class masterServer {
 
         // When the logfile is missing the update is still running
         $this->shellScript .= 'if [ ! -f ' . $updateLog . ' ]; then' . "\n";
-        $this->shellScript .= 'UPDATESTATUS="${UPDATESTATUS};' . $shorten . '=1"' . "\n";
+        $this->shellScript .= 'UPDATESTATUS="{$UPDATESTATUS};' . $shorten . '=1"' . "\n";
         $this->shellScript .= 'else' . "\n";
 
         // If it exists and the update is not running, the update is finished
         $this->shellScript .= 'if [ "`ps fx | grep \'masterserver/' . $shorten . '\' | grep -v grep | head -n 1`" ]; then' . "\n";
-        $this->shellScript .= 'UPDATESTATUS="${UPDATESTATUS};' . $shorten . '=1"' . "\n";
+        $this->shellScript .= 'UPDATESTATUS="{$UPDATESTATUS};' . $shorten . '=1"' . "\n";
         $this->shellScript .= 'else' . "\n";
-        $this->shellScript .= 'UPDATESTATUS="${UPDATESTATUS};' . $shorten . '=0"' . "\n";
+        $this->shellScript .= 'UPDATESTATUS="{$UPDATESTATUS};' . $shorten . '=0"' . "\n";
         $this->shellScript .= 'fi' . "\n";
 
         $this->shellScript .= 'fi' . "\n";

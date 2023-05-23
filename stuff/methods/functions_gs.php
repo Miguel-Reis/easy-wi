@@ -110,7 +110,7 @@ if (!function_exists('eacchange')) {
 
                     $mysql_port = (port($mysql_port)) ? $mysql_port : 3306;
 
-                    $eacSql = new PDO("mysql:host=${mysql_server};dbname=${mysql_db};port=${mysql_port}", $mysql_user, $mysql_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+                    $eacSql = new PDO("mysql:host={$mysql_server};dbname={$mysql_db};port={$mysql_port}", $mysql_user, $mysql_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 
                     if ($dbConnect['debug'] == 1) {
                         $eacSql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
