@@ -1,3 +1,5 @@
 template/
 stuff/keyphrasefile.php
 stuff/config.php
+.vscode
+.vscode/*

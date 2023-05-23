@@ -388,7 +388,7 @@ class masterServer {
     private function linuxCollectData ($row, $force, $returnSuccessInAnyCase) {
 
         $absoluteGamePath = $this->masterserverDir . $row['shorten'];
-        $updateLog = '/home/' . $this->sshuser . '/logs/update.up.-' . $row['shorten'] . '.log';
+        $updateLog = '/home/' . $this->sshuser . '/logs/update-' . $row['shorten'] . '.log';
 
         // Ensure we are in the home folder
         $this->shellScript .= 'cd /home/' . $this->sshuser . "\n";
