@@ -37,19 +37,18 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['ipBans'] and $reseller_id != 0)) {
+if ((!isset($admin_id) || $main != 1) || (isset($admin_id) && !$pa['ipBans'] && $reseller_id != 0)) {
     header('Location: admin.php');
     die('No Access');
 }
 
 $sprache = getlanguagefile('logs', $user_language, $reseller_id);
 
-if ($ui->w('action', 2, 'post') == 'dl' and $ui->id('id', 19, 'post')) {
-
+if ($ui->w('action', 2, 'post') == 'dl' && $ui->id('id', 19, 'post')) {
     $i = 0;
 
     if (token(true)) {
-
+        
         $query = $sql->prepare("DELETE FROM `badips` WHERE `id`=? LIMIT 1");
 
         foreach ($ui->id('id', 19, 'post') as $id) {
@@ -59,15 +58,11 @@ if ($ui->w('action', 2, 'post') == 'dl' and $ui->id('id', 19, 'post')) {
             $i++;
         }
 
-        $template_file = $i . ' entries deleted';
-
+        $template_file = "$i entries deleted";
     } else {
         $template_file = $spracheResponse->token;
     }
-
 } else {
-
     configureDateTables('-1', '1, "desc"', 'ajax.php?w=datatable&d=ipbans');
-
     $template_file = 'admin_ip_bans.tpl';
 }

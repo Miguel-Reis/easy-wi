@@ -49,7 +49,7 @@ $query->execute();
 $failLogins = (int) $query->fetchColumn();
 
 $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `badips`");
-$query->execute(array($resellerLockupID));
+$query->execute();
 $array['iTotalRecords'] = $query->fetchColumn();
 
 if ($sSearch) {

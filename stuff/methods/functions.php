@@ -186,7 +186,7 @@ if (!function_exists('passwordgenerate')) {
             $dirs = scandir($dir);
     
             foreach ($dirs as $row) {
-                if (smallLettersCheck($row, 2)) {
+                if (small_letters_check($row, 2)) {
                     $selectLanguages[] = $row;
                 }
             }
@@ -1403,9 +1403,9 @@ if (!function_exists('passwordgenerate')) {
             $ajaxSource = '"bServerSide" : true,"sAjaxSource": "' . $ajaxSource. '",';
         }
 
-        $htmlExtraInformation['css'][] = '<link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css">';
-        $htmlExtraInformation['js'][] = '<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js" type="text/javascript"></script>';
-        $htmlExtraInformation['js'][] = '<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap.min.js" type="text/javascript"></script>';
+        $htmlExtraInformation['css'][] = '<link href="css/default/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
+        $htmlExtraInformation['js'][] = '<script src="js/default/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
+        $htmlExtraInformation['js'][] = '<script src="js/default/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
         $htmlExtraInformation['js'][] = "<script type='text/javascript'>
 $(function() {
     $('#dataTable').dataTable({

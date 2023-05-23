@@ -78,7 +78,6 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     $iSortCol = ($ui->isinteger('iSortCol_0', 'get')) ? $ui->isinteger('iSortCol_0', 'get') : 0;
     $sSortDir = ($ui->smallletters('sSortDir_0', 4, 'get') == 'desc') ? 'DESC' : 'ASC';
     $sSearch = (strlen($ui->escaped('sSearch', 'get')) > 0) ? $ui->escaped('sSearch', 'get') : false;
-    $admin_and_reseller = isset($admin_id) and isset($reseller_id);
 
     // Userlog
     if (($ui->smallletters('d', 7, 'get') == 'userlog' and isset($user_id)) or ($ui->smallletters('d', 12, 'get') == 'adminuserlog' and isset($admin_id)) and $pa['log']) {
@@ -88,32 +87,32 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         require_once(EASYWIDIR . '/stuff/ajax/datatable_userlog.php');
 
         // Mail log
-    } else if ($ui->smallletters('d', 7, 'get') == 'maillog' and $admin_and_reseller and isset($resellerLockupID) and $pa['jobs']) {
+    } else if ($ui->smallletters('d', 7, 'get') == 'maillog' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['jobs']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_maillog.php');
 
         // Job log
-    } else if ($ui->smallletters('d', 6, 'get') == 'joblog' and $admin_and_reseller and isset($resellerLockupID) and $pa['jobs']) {
+    } else if ($ui->smallletters('d', 6, 'get') == 'joblog' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['jobs']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_joblog.php');
 
         // IP bans
-    } else if ($ui->smallletters('d', 6, 'get') == 'ipbans' and $admin_and_reseller and $reseller_id == 0 and $pa['ipBans']) {
+    } else if ($ui->smallletters('d', 6, 'get') == 'ipbans' and isset($admin_id) and isset($reseller_id) and $reseller_id == 0 and $pa['ipBans']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_ipbans.php');
 
         // custom module
-    } else if ($ui->smallletters('d', 12, 'get') == 'custommodule' and $admin_and_reseller and $reseller_id == 0 and $pa['root']) {
+    } else if ($ui->smallletters('d', 12, 'get') == 'custommodule' and isset($admin_id) and isset($reseller_id) and $reseller_id == 0 and $pa['root']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_custommodule.php');
 
         // List of imported news feeds
-    } else if ($ui->smallletters('d', 16, 'get') == 'feedsnewsentries' and $admin_and_reseller and isset($resellerLockupID) and $pa['addons']) {
+    } else if ($ui->smallletters('d', 16, 'get') == 'feedsnewsentries' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_feedsnewsentries.php');
 
         // List of feeds
-    } else if ($ui->smallletters('d', 5, 'get') == 'feeds' and $admin_and_reseller and isset($resellerLockupID) and $pa['addons']) {
+    } else if ($ui->smallletters('d', 5, 'get') == 'feeds' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_feeds.php');
 
@@ -123,47 +122,47 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         require_once(EASYWIDIR . '/stuff/ajax/datatable_appmasterserver.php');
 
         // GS images
-    } else if ($ui->smallletters('d', 10, 'get') == 'gameimages' and $admin_and_reseller and isset($resellerLockupID) and $pa['gimages']) {
+    } else if ($ui->smallletters('d', 10, 'get') == 'gameimages' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gimages']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_gameimages.php');
 
         // GS addons
-    } else if ($ui->smallletters('d', 16, 'get') == 'gameserveraddons' and $admin_and_reseller and isset($resellerLockupID) and $pa['addons']) {
+    } else if ($ui->smallletters('d', 16, 'get') == 'gameserveraddons' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_gameaddons.php');
 
         // App server
-    } else if ($ui->smallletters('d', 9, 'get') == 'appserver' and $admin_and_reseller and isset($resellerLockupID) and $pa['roots']) {
+    } else if ($ui->smallletters('d', 9, 'get') == 'appserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['roots']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_appserver.php');
 
         // Admins, reseller and user
-    } else if ($ui->smallletters('d', 4, 'get') == 'user' and $admin_and_reseller and isset($resellerLockupID) and ($pa['user'] or $pa['user_users'] or $pa['userPassword'])) {
+    } else if ($ui->smallletters('d', 4, 'get') == 'user' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and ($pa['user'] or $pa['user_users'] or $pa['userPassword'])) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_user.php');
 
         // Voice master
-    } else if ($ui->smallletters('d', 17, 'get') == 'voicemasterserver' and $admin_and_reseller and isset($resellerLockupID) and $pa['voicemasterserver']) {
+    } else if ($ui->smallletters('d', 17, 'get') == 'voicemasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voicemasterserver']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_voicemasterserver.php');
 
         // TSDNS master
-    } else if ($ui->smallletters('d', 17, 'get') == 'tsdnsmasterserver' and $admin_and_reseller and isset($resellerLockupID) and $pa['voicemasterserver']) {
+    } else if ($ui->smallletters('d', 17, 'get') == 'tsdnsmasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voicemasterserver']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_tsdnsmasterserver.php');
 
         // MySQL server
-    } else if ($ui->smallletters('d', 11, 'get') == 'mysqlserver' and $admin_and_reseller and isset($resellerLockupID) and $pa['mysql_settings']) {
+    } else if ($ui->smallletters('d', 11, 'get') == 'mysqlserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['mysql_settings']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_mysqlserver.php');
 
         // Web master
-    } else if ($ui->smallletters('d', 15, 'get') == 'webmasterserver' and $admin_and_reseller and isset($resellerLockupID) and $pa['webmaster']) {
+    } else if ($ui->smallletters('d', 15, 'get') == 'webmasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['webmaster']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_webmasterserver.php');
 
         // Page comments
-    } else if ($ui->smallletters('d', 12, 'get') == 'pagecomments' and $admin_and_reseller and isset($resellerLockupID) and $pa['cms_pages']) {
+    } else if ($ui->smallletters('d', 12, 'get') == 'pagecomments' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['cms_pages']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_pagecomments.php');
 
@@ -183,23 +182,23 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
             }
         }
 
-        if ($ui->smallletters('d', 10, 'get') == 'gameserver' and $admin_and_reseller and isset($resellerLockupID) and $pa['gserver']) {
+        if ($ui->smallletters('d', 10, 'get') == 'gameserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gserver']) {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_gameserver.php');
 
-        } else if ($ui->smallletters('d', 11, 'get') == 'voiceserver' and $admin_and_reseller and isset($resellerLockupID) and $pa['voiceserver']) {
+        } else if ($ui->smallletters('d', 11, 'get') == 'voiceserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voiceserver']) {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_voiceserver.php');
 
-        } else if ($ui->smallletters('d', 5, 'get') == 'tsdns' and $admin_and_reseller and isset($resellerLockupID) and $pa['voiceserver']) {
+        } else if ($ui->smallletters('d', 5, 'get') == 'tsdns' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voiceserver']) {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_tsdns.php');
 
-        } else if ($ui->smallletters('d', 7, 'get') == 'mysqldb' and $admin_and_reseller and isset($resellerLockupID) and $pa['mysql']) {
+        } else if ($ui->smallletters('d', 7, 'get') == 'mysqldb' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['mysql']) {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_mysqldb.php');
 
-        } else if ($ui->smallletters('d', 8, 'get') == 'webvhost' and $admin_and_reseller and isset($resellerLockupID) and $pa['webmaster']) {
+        } else if ($ui->smallletters('d', 8, 'get') == 'webvhost' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['webmaster']) {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_webvhost.php');
 
@@ -209,7 +208,7 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     die(json_encode($array));
 
 // App master server updates. Triggered asyncronous with ajax to avoid 5xx errors
-} else if ($ui->smallletters('d', 21, 'get') == 'masterappserverupdate' and $admin_and_reseller and isset($resellerLockupID) and $pa['masterServer']) {
+} else if ($ui->smallletters('d', 21, 'get') == 'masterappserverupdate' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['masterServer']) {
 
     require_once(EASYWIDIR . '/stuff/ajax/app_master_update.php');
     die;

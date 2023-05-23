@@ -388,7 +388,7 @@ class masterServer {
     private function linuxCollectData ($row, $force, $returnSuccessInAnyCase) {
 
         $absoluteGamePath = $this->masterserverDir . $row['shorten'];
-        $updateLog = '/home/' . $this->sshuser . '/logs/update-' . $row['shorten'] . '.log';
+        $updateLog = '/home/' . $this->sshuser . '/logs/update.up.-' . $row['shorten'] . '.log';
 
         // Ensure we are in the home folder
         $this->shellScript .= 'cd /home/' . $this->sshuser . "\n";
@@ -412,7 +412,7 @@ class masterServer {
 
                    $this->shellScript .= 'cd /home/' . $this->sshuser . '/masterserver/steamCMD/'. "\n";
  
-                    $this->shellScript .= 'taskset -c 0 nice -n +19 ./steamcmd.sh +force_install_dir ' . $absoluteGamePath . ' +login ';
+                    $this->shellScript .= './steamcmd.sh +force_install_dir ' . $absoluteGamePath . ' +login ';
  
                     if (strlen($this->steamAccount) > 0) {
                         $this->shellScript .= $this->steamAccount . ' ' . $this->steamPassword;
@@ -588,7 +588,7 @@ class masterServer {
                 if ($this->os == 'L') {
                     $this->linuxCollectData($row, $force, $returnSuccessInAnyCase);
                 } else {
-                    $this->windowsCollectData($row, $force, $returnSuccessInAnyCase);
+                    return null;
                 }
 
                 // Set masterserver to updating

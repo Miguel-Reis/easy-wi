@@ -106,19 +106,19 @@ $folderArray = array(
 );
 
 foreach ($folderArray as $folder) {
-    if (is_dir(EASYWIDIR . "/${folder}")) {
-        $handle = @fopen(EASYWIDIR . "/${folder}test.txt", "w+");
+    if (is_dir(EASYWIDIR . "/{$folder}")) {
+        $handle = @fopen(EASYWIDIR . "/{$folder}test.txt", "w+");
 
         if ($handle) {
             fclose($handle);
-            unlink(EASYWIDIR . "/${folder}test.txt");
-            $systemCheckOk['folders'][] = "Folder exists and can write to: ${folder}";
+            unlink(EASYWIDIR . "/{$folder}test.txt");
+            $systemCheckOk['folders'][] = "Folder exists and can write to: {$folder}";
 
         } else {
-            $systemCheckError['folders'][] = "Folder exists but cannot edit files: ${folder}";
+            $systemCheckError['folders'][] = "Folder exists but cannot edit files: {$folder}";
         }
     } else {
-        $systemCheckError['folders'][] = "Folder does not exist or cannot access: ${folder}";
+        $systemCheckError['folders'][] = "Folder does not exist or cannot access: {$folder}";
     }
 }
 
